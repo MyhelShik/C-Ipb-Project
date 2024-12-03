@@ -14,8 +14,7 @@ typedef struct
 { 
     int id; 
     char nome[50]; 
-    char endereco[100]; 
-    char telefone[15]; 
+    int cc;
     } leitor;
 
 typedef struct 

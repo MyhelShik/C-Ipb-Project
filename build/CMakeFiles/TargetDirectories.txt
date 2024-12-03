@@ -1,0 +1,3 @@
+C:/Users/gafga/Documents/GitHub/literate-barnacle-/build/CMakeFiles/C-school-project.dir
+C:/Users/gafga/Documents/GitHub/literate-barnacle-/build/CMakeFiles/edit_cache.dir
+C:/Users/gafga/Documents/GitHub/literate-barnacle-/build/CMakeFiles/rebuild_cache.dir

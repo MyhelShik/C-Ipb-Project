@@ -25,10 +25,10 @@ typedef struct
     char dataDevolucao[11]; 
 } emprestimo;
 
-#define max_livros 2
-#define max_leitor 50
-#define max_emprestimo 50
 
+#define max_livros 1
+#define max_leitor 1
+#define max_emprestimo 50
 
 
 
@@ -50,9 +50,12 @@ void GerirLeitores()
 
         switch(opcao)
         {
+            int l;
             case 1: 
+            printf("Indique quantos leitores vais inserir\n");
+            scanf("%d", &l);
             printf("Adicionar leitores:\n");
-            for (int i = 0; i < max_leitor; i++)
+            for (int i = 0; i < l; i++)
             {
                 printf("Insira o nome do leitor %d:", i+1);
                 scanf(" %[^\n]", &leitores[i].nome);
@@ -119,7 +122,7 @@ void menu_principal()
                 GerirLivros();
                 break;
             case 2:
-                //GerirLeitores();
+                GerirLeitores();
                 break;
             case 3:
                 //RegistarEmprestimo();
@@ -137,7 +140,7 @@ void menu_principal()
                 printf("Opcao invalida. Tente novamente...\n");
         }
     } while (opcao !=6);
-
+return 0;
 }
 void GerirLivros()
 {
@@ -172,6 +175,7 @@ void GerirLivros()
                 printf("Opção inválida. Tente novamente...\n");
         }
      while (opcao2 !=5);
+     return menu_principal();
 }
 livro *livros[max_livros];  // Array de ponteiros para armazenar os livros
 int num_livros_adicionados = 0;  // Contador de livros adicionados 
@@ -191,23 +195,23 @@ void AdicionarLivro()
         }
 
         novolivro->id = ++contador_id;  // Aumenta o ID para o próximo livro
-
+        fflush(stdin);
         // Leitura do título com fgets
         printf("Titulo do livro: \n");
         fgets(novolivro->titulo, sizeof(novolivro->titulo), stdin);
         novolivro->titulo[strcspn(novolivro->titulo, "\n")] = '\0';  // Remove o caractere de nova linha
-
+        
         // Leitura do autor com fgets
         printf("Autor do livro: \n");
         fgets(novolivro->autor, sizeof(novolivro->autor), stdin);
         novolivro->autor[strcspn(novolivro->autor, "\n")] = '\0';  // Remove o caractere de nova linha
-
+        fflush(stdin);
         // Leitura do ano com fgets e conversão para inteiro
         printf("Ano do livro: \n");
         char ano_input[10];
         fgets(ano_input, sizeof(ano_input), stdin);
         sscanf(ano_input, "%d", &novolivro->ano);  // Converte a string para um inteiro
-
+        fflush(stdin);    
         // Exibe os dados do livro adicionado
         printf("Livro adicionado: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", novolivro->id, novolivro->titulo, novolivro->autor, novolivro->ano);
 
@@ -229,12 +233,24 @@ void AdicionarLivro()
 }
 void ListarLivros() 
 {
+    
+    char opcao[40];
+    // Exibe os livros cadastrados
+    do
+    {
+        for (int i = 0; i < num_livros_adicionados; i++) {
+        printf("ID: %d\n", livros[i]->id);
+        printf("Titulo: %s\n", livros[i]->titulo);
+        printf("Autor: %s\n", livros[i]->autor);
+        printf("Ano: %d\n", livros[i]->ano);
+        printf("--------------------\n");
+    }
     if (num_livros_adicionados == 0) {
         printf("Nenhum livro no sistema.\n");
         return;
-    }
-
-    // Exibe os livros cadastrados
+    }printf("Para sair escreva s")
+    } while (opcao == 's' && opcao =='S');
+    
     for (int i = 0; i < num_livros_adicionados; i++) {
         printf("ID: %d\n", livros[i]->id);
         printf("Titulo: %s\n", livros[i]->titulo);
@@ -242,6 +258,11 @@ void ListarLivros()
         printf("Ano: %d\n", livros[i]->ano);
         printf("--------------------\n");
     }
+    if (num_livros_adicionados == 0) {
+        printf("Nenhum livro no sistema.\n");
+        return;
+    };
+    //return GerirLivros();
 }
 void PesquisarLivro() {
     if (num_livros_adicionados == 0) {
@@ -269,7 +290,7 @@ void PesquisarLivro() {
     if (!encontrado) {
         printf("Nenhum livro encontrado com o título '%s'.\n", titulo_busca);
     }
-    return;
+    return GerirLivros();
 }
 // Função para remover um livro por ID
 void RemoverLivro() 
@@ -304,11 +325,11 @@ void RemoverLivro()
     if (!encontrado) {
         printf("Livro com ID %d não encontrado.\n", id);
     }
-
+    return GerirLivros();
 }
 int main()
 {
-    
+    menu_principal();
     
     return 0;
     }

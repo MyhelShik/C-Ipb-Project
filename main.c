@@ -7,5 +7,10 @@ int main()
     //asdasd
     // sadasd
     // mudanca no codigo
+<<<<<<< Updated upstream
     //proximo 
+=======
+
+    // not mudanca
+>>>>>>> Stashed changes
     }

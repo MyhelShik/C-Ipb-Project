@@ -237,7 +237,8 @@ void ListarLivros()
     
     char opcao[40];
     // Exibe os livros cadastrados
-    do
+    /*
+   do
     {
         for (int i = 0; i < num_livros_adicionados; i++) {
         printf("ID: %d\n", livros[i]->id);
@@ -251,6 +252,7 @@ void ListarLivros()
         return;
     }printf("Para sair escreva s")
     } while (opcao == 's' && opcao =='S');
+    */
     
     for (int i = 0; i < num_livros_adicionados; i++) {
         printf("ID: %d\n", livros[i]->id);
@@ -330,7 +332,7 @@ void RemoverLivro()
 }
 int main()
 {
-    
+    menu_principal();
     
     return 0;
     }

@@ -30,6 +30,74 @@ typedef struct
 #define max_emprestimo 50
 
 
+
+
+leitor leitores[max_leitor];
+
+void GerirLeitores()
+{
+    int opcao;
+    int removeID = 0;
+    do
+    {
+        printf("\n Menu Leitores:\n"); 
+        printf("1. Adicionar leitores\n"); 
+        printf("2. Listar leitores\n"); 
+        printf("3. Remover leitores\n");
+        printf("6. Sair\n"); 
+        printf("Escolha uma opção: "); 
+        scanf("%d", &opcao);
+
+        switch(opcao)
+        {
+            case 1: 
+            printf("Adicionar leitores:\n");
+            for (int i = 0; i < max_leitor; i++)
+            {
+                printf("Insira o nome do leitor %d:", i+1);
+                scanf(" %[^\n]", &leitores[i].nome);
+                printf("Insira o numero do cartão de cidadão:");
+                scanf("%d", &leitores[i].cc);
+
+                leitores[i].id = i +1; // unique id assign
+            }
+            
+            break;
+            
+            case 2:
+            printf("Listar leitores:\n");
+            for (int i = 0; i < max_leitor; i++)
+            {
+                if(leitores[i].id != 0)
+                    printf("leitor: %d \n nome:%s - CC:%d\n",i+1,leitores[i].nome,leitores[i].cc);
+            }    
+            break;
+
+            case 3:
+                printf("Remover leitores:\n");
+                scanf("%d",&removeID);
+                for (int i = 0; i < max_leitor; i++)
+                {
+                    if (leitores[i].id == removeID)
+                    {
+                        leitores[i].id = 0;
+                        strcpy(leitores[i].nome, "");
+                        leitores[i].cc = 0;
+                    }
+                    
+                }
+                break;
+            
+
+            
+            default:
+                printf("Opção inválida. Tente novamente...\n");
+                break;
+        }
+    } while (opcao !=6);
+    
+}
+
 void menu_principal() 
 {
     int opcao;

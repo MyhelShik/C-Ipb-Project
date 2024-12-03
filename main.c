@@ -6,4 +6,5 @@ int main()
     printf("Sou gay");
     //asdasd
     // sadasd
-}
+    // mudanca no codigo
+    }

@@ -1,39 +1,42 @@
-# Ignore build directories
-/build/
-/bin/
-/obj/
+# Ignore the build directory
+build/
 
-# Ignore compiled object files
-*.o
-*.a
-*.so
-*.exe
-*.out
-
-# Ignore compiler output files
-*.d
-
-# Ignore dependency files
-*.dep
-
-# Ignore temporary files
-*.swp
-*.swo
-*~
-*.bak
-
-# Ignore IDE project files
-.vscode/
-.idea/
-*.pro.user
-
-# Ignore CMake files
-CMakeLists.txt.user
+# Ignore generated CMake files
 CMakeCache.txt
+CMakeFiles/
 cmake_install.cmake
 Makefile
-Makefile.in
+compile_commands.json
 
-# Ignore other build system files
-*.log
-*.pid
+# Ignore CMake API reply and cache files
+.cmake/
+build/.cmake/api/v1/reply/cmakeFiles-v1-4391e6dc062e312361c7.json
+build/.cmake/api/v1/reply/codemodel-v2-773105f8a6a018dcdc81.json
+build/.cmake/api/v1/reply/index-2024-12-03T10-43-26-0512.json
+build/.cmake/api/v1/reply/target-C-school-project-Debug-2899317cebb8502fd778.json
+build/.cmake/api/v1/reply/toolchains-v1-9b81165876f6d0b28470.json
+build/cmake_install.cmake
+build/CMakeCache.txt
+build/CMakeFiles/3.24.2/CMakeCCompiler.cmake
+build/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin
+build/CMakeFiles/3.24.2/CMakeRCCompiler.cmake
+build/CMakeFiles/3.24.2/CMakeSystem.cmake
+build/CMakeFiles/3.24.2/CompilerIdC/a.exe
+build/CMakeFiles/3.24.2/CompilerIdC/CMakeCCompilerId.c
+build/CMakeFiles/C-school-project.dir/build.make
+build/CMakeFiles/C-school-project.dir/cmake_clean.cmake
+build/CMakeFiles/C-school-project.dir/compiler_depend.make
+build/CMakeFiles/C-school-project.dir/compiler_depend.ts
+build/CMakeFiles/C-school-project.dir/depend.make
+build/CMakeFiles/C-school-project.dir/DependInfo.cmake
+build/CMakeFiles/C-school-project.dir/flags.make
+build/CMakeFiles/C-school-project.dir/link.txt
+build/CMakeFiles/C-school-project.dir/linklibs.rsp
+build/CMakeFiles/C-school-project.dir/objects1.rsp
+build/CMakeFiles/C-school-project.dir/progress.make
+build/CMakeFiles/CMakeDirectoryInformation.cmake
+build/CMakeFiles/CMakeOutput.log
+build/CMakeFiles/Makefile.cmake
+build/CMakeFiles/Makefile2
+build/CMakeFiles/TargetDirectories.txt
+build/compile_commands.json

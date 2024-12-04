@@ -27,8 +27,8 @@ typedef struct
 } emprestimo;
 
 
-#define max_livros 1
-#define max_leitor 1
+#define max_livros 2
+#define max_leitor 2
 #define max_emprestimo 50
 
 
@@ -53,10 +53,8 @@ void GerirLeitores()
         {
             int l;
             case 1: 
-            printf("Indique quantos leitores vais inserir\n");
-            scanf("%d", &l);
             printf("Adicionar leitores:\n");
-            for (int i = 0; i < l; i++)
+            for (int i = 0; i < max_leitor; i++)
             {
                 printf("Insira o nome do leitor %d:", i+1);
                 scanf(" %[^\n]", &leitores[i].nome);

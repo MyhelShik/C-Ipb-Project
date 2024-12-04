@@ -328,6 +328,64 @@ void RemoverLivro()
     }
     return GerirLivros();
 }
+
+void exibirRelatorioLivrosDisponiveis() {
+    printf("Relatório de Livros Disponíveis\n");
+    for (int i = 0; i < num_livros_adicionados; i++) {
+        printf("%d Livro ID: %d\n",i, livros[i]->id);
+    }
+    // Código para listar livros disponíveis
+}
+
+void exibirRelatorioLivrosEmprestados() {
+    printf("Relatório de Livros Emprestados\n");
+    // Código para listar livros emprestados
+}
+
+void exibirRelatorioLeitoresAtivos() {
+    printf("Relatório de Leitores Ativos\n");
+    for (i=0;i<sizeof(leitores.nome);i++){
+    	
+	}
+    // Código para listar leitores ativos
+}
+
+void exibirRelatorioLivrosMaisEmprestados() {
+    printf("Relatório de Livros Mais Emprestados\n");
+    // Código para listar livros mais emprestados
+}
+
+void main(){
+                printf("menu \"Exibir Relatórios\":\n");
+                printf("1. Relatório de Livros Disponíveis\n");
+                printf("2. Relatório de Livros Emprestados\n");
+                printf("3. Relatório de Leitores Ativos\n");
+                printf("4. Voltar ao Menu Principal\n");
+                printf("Escolha uma opção: ");
+                
+                int subOpcao;
+                scanf("%d", &subOpcao);
+
+                switch (subOpcao) {
+                    case 1:
+                        exibirRelatorioLivrosDisponiveis();
+                        break;
+                    case 2:
+                        exibirRelatorioLivrosEmprestados();
+                        break;
+                    case 3:
+                        exibirRelatorioLeitoresAtivos();
+                        break;
+                    case 4:
+                        printf("Voltando ao Menu Principal\n");
+                        break;
+                    default:
+                        printf("Opção inválida! Tente novamente.\n");
+                        break;
+                }
+               
+
+}
 int main()
 {
     

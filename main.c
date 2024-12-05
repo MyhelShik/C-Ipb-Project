@@ -16,7 +16,7 @@ typedef struct
     int id; 
     char nome[50]; 
     int cc;
-    } leitor;
+}leitor;
 
 typedef struct 
 { 
@@ -33,7 +33,7 @@ typedef struct
 
 
 
-leitor leitores[max_leitor];
+leitor *leitores[max_leitor];
 
 void GerirLeitores()
 {
@@ -51,19 +51,26 @@ void GerirLeitores()
 
         switch(opcao)
         {
-            int l;
-            case 1: 
-            printf("Indique quantos leitores vais inserir\n");
-            scanf("%d", &l);
+            case 1:
             printf("Adicionar leitores:\n");
-            for (int i = 0; i < l; i++)
+            for (int i = 0; i < max_leitor; i++)
             {
+                if (leitores[i] == NULL) 
+                    {
+                        leitores[i] = malloc(sizeof(leitor)); // Allocate memory
+                        if (!leitores[i]) 
+                        {
+                            printf("Erro ao alocar memÃ³ria para leitores[%d]\n", i);
+                            exit(1);
+                        }
+                    }
+                
                 printf("Insira o nome do leitor %d:", i+1);
-                scanf(" %[^\n]", &leitores[i].nome);
+                scanf(" %[^\n]", &leitores[i]->nome);
                 printf("Insira o numero do cartÃ£o de cidadÃ£o:");
-                scanf("%d", &leitores[i].cc);
+                scanf("%d", &leitores[i]->cc);
 
-                leitores[i].id = i +1; // unique id assign
+                leitores[i]->id = i +1; // unique id assign
             }
             
             break;
@@ -72,8 +79,8 @@ void GerirLeitores()
             printf("Listar leitores:\n");
             for (int i = 0; i < max_leitor; i++)
             {
-                if(leitores[i].id != 0)
-                    printf("leitor: %d \n nome:%s - CC:%d\n",i+1,leitores[i].nome,leitores[i].cc);
+                if(leitores[i]->id != 0)
+                    printf("leitor: %d \n nome:%s - CC:%d\n",i+1,leitores[i]->nome,leitores[i]->cc);
             }    
             break;
 
@@ -82,11 +89,11 @@ void GerirLeitores()
                 scanf("%d",&removeID);
                 for (int i = 0; i < max_leitor; i++)
                 {
-                    if (leitores[i].id == removeID)
+                    if (leitores[i]->id == removeID)
                     {
-                        leitores[i].id = 0;
-                        strcpy(leitores[i].nome, "");
-                        leitores[i].cc = 0;
+                        leitores[i]->id = 0;
+                        strcpy(leitores[i]->nome, "");
+                        leitores[i]->cc = 0;
                     }
                     
                 }
@@ -246,10 +253,12 @@ void ListarLivros()
         printf("Ano: %d\n", livros[i]->ano);
         printf("--------------------\n");
     }
-    if (num_livros_adicionados == 0) {
+    if (num_livros_adicionados == 0) 
+    {
         printf("Nenhum livro no sistema.\n");
         return;
-    }printf("Para sair escreva s")
+    }
+    printf("Para sair escreva s");
     } while (opcao == 's' && opcao =='S');
     
     for (int i = 0; i < num_livros_adicionados; i++) {
@@ -329,39 +338,46 @@ void RemoverLivro()
     return GerirLivros();
 }
 
+
 void exibirRelatorioLivrosDisponiveis() {
-    printf("Relatório de Livros Disponíveis\n");
-    for (int i = 0; i < num_livros_adicionados; i++) {
-        printf("%d Livro ID: %d\n",i, livros[i]->id);
+    printf("Relatï¿½rio de Livros Disponï¿½veis\n");
+    for (int i = 0; i < num_livros_adicionados; i++) 
+    {
+        printf("%d Livro ID: %d\n",i, livros[i]->id);        
     }
-    // Código para listar livros disponíveis
+ 
 }
 
 void exibirRelatorioLivrosEmprestados() {
-    printf("Relatório de Livros Emprestados\n");
-    // Código para listar livros emprestados
+    printf("Relatï¿½rio de Livros Emprestados\n");
+    // Cï¿½digo para listar livros emprestados
 }
 
-void exibirRelatorioLeitoresAtivos() {
-    printf("Relatório de Leitores Ativos\n");
-    for (i=0;i<sizeof(leitores.nome);i++){
-    	
-	}
-    // Código para listar leitores ativos
+void exibirRelatorioLeitoresAtivos() 
+{
+    printf("RelatÃ³rio de Leitores Ativos:\n");
+    for (int i = 0; i < max_leitor; i++) 
+    {
+        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+        
+    }
 }
+
 
 void exibirRelatorioLivrosMaisEmprestados() {
-    printf("Relatório de Livros Mais Emprestados\n");
-    // Código para listar livros mais emprestados
+    printf("Relatï¿½rio de Livros Mais Emprestados\n");
+    // Cï¿½digo para listar livros mais emprestados
 }
 
-void main(){
-                printf("menu \"Exibir Relatórios\":\n");
-                printf("1. Relatório de Livros Disponíveis\n");
-                printf("2. Relatório de Livros Emprestados\n");
-                printf("3. Relatório de Leitores Ativos\n");
+
+void main1(){
+                printf("menu \"Exibir Relatï¿½rios\":\n");
+                printf("1. Relatï¿½rio de Livros Disponï¿½veis\n");
+                printf("2. Relatï¿½rio de Livros Emprestados\n");
+                printf("3. Relatï¿½rio de Leitores Ativos\n");
                 printf("4. Voltar ao Menu Principal\n");
-                printf("Escolha uma opção: ");
+                printf("Escolha uma opï¿½ï¿½o: ");
                 
                 int subOpcao;
                 scanf("%d", &subOpcao);
@@ -380,15 +396,20 @@ void main(){
                         printf("Voltando ao Menu Principal\n");
                         break;
                     default:
-                        printf("Opção inválida! Tente novamente.\n");
+                        printf("Opï¿½ï¿½o invï¿½lida! Tente novamente.\n");
                         break;
                 }
                
 
 }
+
+
+
+
+
 int main()
 {
-    
-    
+    // GerirLeitores();
+    // exibirRelatorioLeitoresAtivos();
     return 0;
-    }
+}

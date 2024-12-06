@@ -57,7 +57,7 @@ void GerirLeitores()
             case 1:
             printf("Adicionar leitores:\n");
             for (int i = 0; i < max_leitor; i++)
-            for (int i = 0; i < l; i++)
+            for (int i = 0; i < max_leitor; i++)
             {
                 if (leitores[i] == NULL) 
                     {
@@ -417,6 +417,7 @@ void main1(){
 
 int main()
 {
+    GerirLivros();
     // GerirLeitores();
     // exibirRelatorioLeitoresAtivos();
     return 0;

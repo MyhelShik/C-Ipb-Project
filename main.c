@@ -1,7 +1,17 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+void GerirLivros();
+void AdicionarLivro();
+void ListarLivros();
+void PesquisarLivro();
+void RemoverLivro();
+void GerirLeitores();
+void RegistarEmprestimo();
+void RegistarDevolucao();
+void ExibirRelatorio();
+void menu_principal();
 
 typedef struct
 {
@@ -26,9 +36,6 @@ typedef struct
     char dataDevolucao[11]; 
 } emprestimo;
 
-#define max_livros 2
-#define max_leitor 50
-#define max_emprestimo 50
 
 #define max_livros 1
 #define max_leitor 1
@@ -57,7 +64,6 @@ void GerirLeitores()
             case 1:
             printf("Adicionar leitores:\n");
             for (int i = 0; i < max_leitor; i++)
-            for (int i = 0; i < max_leitor; i++)
             {
                 if (leitores[i] == NULL) 
                     {
@@ -70,7 +76,7 @@ void GerirLeitores()
                     }
                 
                 printf("Insira o nome do leitor %d:", i+1);
-                scanf(" %[^\n]", &leitores[i]->nome);
+                scanf(" %[^\n]", leitores[i]->nome);
                 printf("Insira o numero do cartão de cidadão:");
                 scanf("%d", &leitores[i]->cc);
 
@@ -112,54 +118,11 @@ void GerirLeitores()
     } while (opcao !=6);
     
 }
-
-void menu_principal() 
-{
-    int opcao;
-    do
-    {
-        printf("\nMenu Principal:\n"); 
-        printf("1. Gerir Livros\n"); 
-        printf("2. Gerir Leitores\n"); 
-        printf("3. Registar Emprestimo\n"); 
-        printf("4. Registar Devolução\n"); 
-        printf("5. Exibir Relatorios\n"); 
-        printf("6. Sair\n"); 
-        printf("Escolha uma opção: "); 
-        scanf("%d", &opcao);
-
-        switch(opcao)
-        {
-            case 1:
-                GerirLivros();
-                break;
-            case 2:
-                //GerirLeitores();
-                GerirLeitores();
-                break;
-            case 3:
-                //RegistarEmprestimo();
-                break;
-            case 4:
-                //RegistarDevolucao();
-                break;
-            case 5:
-                //ExibirRelatorio();
-                break;
-            case 6:
-                //printf("A sair...\n");
-                break;
-            default:
-                printf("Opcao invalida. Tente novamente...\n");
-        }
-    } while (opcao !=6);
-
-return 0;
-}
 void GerirLivros()
 {
     int opcao2;
-    printf("\nMenu Principal:\n"); 
+    do{
+        printf("\nMenu Principal:\n"); 
         printf("1. Adicionar Livro\n"); 
         printf("2. Listar Livros\n"); 
         printf("3. Pesquisar Livro\n"); 
@@ -187,8 +150,9 @@ void GerirLivros()
                 break;
             default:
                 printf("Opção inválida. Tente novamente...\n");
-        }
-     while (opcao2 !=5);
+          }
+		} while (opcao2 !=5);
+        
      return menu_principal();
 }
 livro *livros[max_livros];  // Array de ponteiros para armazenar os livros
@@ -200,14 +164,14 @@ void AdicionarLivro()
 
     // bloco para adicionar múltiplos livros
     for (int i = 0; i < max_livros; i++) {
-        printf("A adicionar livro %d de %d\n", i + 1, max_livros);
 
+        printf("A adicionar livro %d de %d\n", i + 1, max_livros);
         novolivro = (livro *)malloc(sizeof(livro));  // Aloca memória para um livro
         if (novolivro == NULL) {
             printf("Falha na alocação de memória\n");
             return;
-        }
-
+             }
+    
         novolivro->id = ++contador_id;  // Aumenta o ID para o próximo livro
 
         fflush(stdin);
@@ -243,21 +207,15 @@ void AdicionarLivro()
         getchar();  // Limpa o buffer de entrada
 
         if (continuar != 's' && continuar != 'S') {
-            //break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
-            return GerirLivros();
+            break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
         }
-        else{
-            return AdicionarLivro();
-        }
-        
-    }
-    printf("--------------------\n");
-    
+    }    
+        GerirLivros();
 }
 void ListarLivros() 
 {
     
-    char opcao[40];
+    char opcao;
     // Exibe os livros cadastrados
     do
     {
@@ -346,7 +304,14 @@ void RemoverLivro()
     return GerirLivros();
 }
 
+void RegistarEmprestimo(){
+    
+}
 
+void RegistarDevolucao(){
+    
+    
+}
 void exibirRelatorioLivrosDisponiveis() {
     printf("Relat�rio de Livros Dispon�veis\n");
     for (int i = 0; i < num_livros_adicionados; i++) 
@@ -379,7 +344,7 @@ void exibirRelatorioLivrosMaisEmprestados() {
 }
 
 
-void main1(){
+void ExibirRelatorio(){
                 printf("menu \"Exibir Relat�rios\":\n");
                 printf("1. Relat�rio de Livros Dispon�veis\n");
                 printf("2. Relat�rio de Livros Emprestados\n");
@@ -411,14 +376,51 @@ void main1(){
 
 }
 
-
-
-
-
-int main()
+void menu_principal() 
 {
-    GerirLivros();
-    // GerirLeitores();
-    // exibirRelatorioLeitoresAtivos();
-    return 0;
+    int opcao;
+    do
+    {
+        printf("\nMenu Principal:\n"); 
+        printf("1. Gerir Livros\n"); 
+        printf("2. Gerir Leitores\n"); 
+        printf("3. Registar Emprestimo\n"); 
+        printf("4. Registar Devolução\n"); 
+        printf("5. Exibir Relatorios\n"); 
+        printf("6. Sair\n"); 
+        printf("Escolha uma opção: "); 
+        scanf("%d", &opcao);
+
+        switch(opcao)
+        {
+            case 1:
+                GerirLivros();
+                break;
+            case 2:
+                GerirLeitores();
+                break;
+            case 3:
+                RegistarEmprestimo();
+                break;
+            case 4:
+                RegistarDevolucao();
+                break;
+            case 5:
+                ExibirRelatorio();
+                break;
+            case 6:
+                printf("A sair...\n");
+                break;
+            default:
+                printf("Opcao invalida. Tente novamente...\n");
+        }
+    } while (opcao !=6);
+
+}
+
+
+
+int main(){
+    
+
 }

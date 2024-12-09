@@ -23,7 +23,8 @@ CMakeFiles/C-school-project.dir/main.c.obj: C:/Users/MyhelShik/Documents/GitHub/
   C:/TDM-GCC-64/x86_64-w64-mingw32/include/malloc.h \
   C:/TDM-GCC-64/x86_64-w64-mingw32/include/string.h \
   C:/TDM-GCC-64/x86_64-w64-mingw32/include/sec_api/string_s.h \
-  C:/TDM-GCC-64/x86_64-w64-mingw32/include/locale.h
+  C:/Users/MyhelShik/Documents/GitHub/C-Ipb-Project/Functions.h \
+  C:/Users/MyhelShik/Documents/GitHub/C-Ipb-Project/Data.h
 
 
 C:/TDM-GCC-64/x86_64-w64-mingw32/include/corecrt_stdio_config.h:
@@ -56,6 +57,8 @@ C:/TDM-GCC-64/x86_64-w64-mingw32/include/limits.h:
 
 C:/TDM-GCC-64/x86_64-w64-mingw32/include/stdlib.h:
 
+C:/Users/MyhelShik/Documents/GitHub/C-Ipb-Project/Functions.h:
+
 C:/TDM-GCC-64/x86_64-w64-mingw32/include/corecrt_wstdlib.h:
 
 C:/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/10.3.0/include-fixed/limits.h:
@@ -70,4 +73,4 @@ C:/TDM-GCC-64/x86_64-w64-mingw32/include/string.h:
 
 C:/TDM-GCC-64/x86_64-w64-mingw32/include/sec_api/string_s.h:
 
-C:/TDM-GCC-64/x86_64-w64-mingw32/include/locale.h:
+C:/Users/MyhelShik/Documents/GitHub/C-Ipb-Project/Data.h:

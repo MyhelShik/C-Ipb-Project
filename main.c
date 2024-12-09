@@ -188,19 +188,23 @@ void GerirLivros()
      while (opcao2 !=5);
      return menu_principal();
 }
+
 livro *livros[max_livros];  // Array de ponteiros para armazenar os livros
 int num_livros_adicionados = 0;  // Contador de livros adicionados 
+
 void AdicionarLivro()
 {
     livro *novolivro;  // Ponteiro para um livro
     static int contador_id = 0;  // Variável estática para manter o contador de IDs
 
     // bloco para adicionar múltiplos livros
-    for (int i = 0; i < max_livros; i++) {
+    for (int i = 0; i < max_livros; i++) 
+    {
         printf("A adicionar livro %d de %d\n", i + 1, max_livros);
 
         novolivro = (livro *)malloc(sizeof(livro));  // Aloca memória para um livro
-        if (novolivro == NULL) {
+        if (novolivro == NULL) 
+        {
             printf("Falha na alocação de memória\n");
             return;
         }
@@ -239,11 +243,13 @@ void AdicionarLivro()
         scanf(" %c", &continuar);  // Lê a resposta
         getchar();  // Limpa o buffer de entrada
 
-        if (continuar != 's' && continuar != 'S') {
+        if (continuar != 's' && continuar != 'S') 
+        {
             //break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
             return GerirLivros();
         }
-        else{
+        else
+        {
             return AdicionarLivro();
         }
         
@@ -258,19 +264,20 @@ void ListarLivros()
     // Exibe os livros cadastrados
     do
     {
-        for (int i = 0; i < num_livros_adicionados; i++) {
+        for (int i = 0; i < num_livros_adicionados; i++) 
+        {
         printf("ID: %d\n", livros[i]->id);
         printf("Titulo: %s\n", livros[i]->titulo);
         printf("Autor: %s\n", livros[i]->autor);
         printf("Ano: %d\n", livros[i]->ano);
         printf("--------------------\n");
-    }
-    if (num_livros_adicionados == 0) 
-    {
-        printf("Nenhum livro no sistema.\n");
-        return;
-    }
-    printf("Para sair escreva s");
+        }
+        if (num_livros_adicionados == 0) 
+        {
+            printf("Nenhum livro no sistema.\n");
+            return;
+        }
+        printf("Para sair escreva s");
     } while (opcao == 's' && opcao =='S');
     
     
@@ -279,7 +286,8 @@ void ListarLivros()
 
 
 void PesquisarLivro() {
-    if (num_livros_adicionados == 0) {
+    if (num_livros_adicionados == 0) 
+    {
         printf("Nenhum livro no sistema.\n");
         return;
     }
@@ -291,7 +299,8 @@ void PesquisarLivro() {
 
     int encontrado = 0;
     for (int i = 0; i < num_livros_adicionados; i++) {
-        if (strstr(livros[i]->titulo, titulo_busca) != NULL) {  // Verifica se o título contém o texto de busca
+        if (strstr(livros[i]->titulo, titulo_busca) != NULL) 
+        {  // Verifica se o título contém o texto de busca
             printf("Livro encontrado: ID: %d\n", livros[i]->id);
             printf("Titulo: %s\n", livros[i]->titulo);
             printf("Autor: %s\n", livros[i]->autor);
@@ -316,14 +325,17 @@ void RemoverLivro()
     printf("Digite o ID do livro que deseja remover: ");
     scanf("%d", &id_remover);
     // Procura pelo livro com o ID fornecido
-    for (i = 0; i < num_livros_adicionados; i++) {
-        if (livros[i]->id == id) {
+    for (i = 0; i < num_livros_adicionados; i++) 
+    {
+        if (livros[i]->id == id) 
+        {
             // Livro encontrado
             printf("Livro encontrado: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
 
         }
             // Desloca os livros seguintes para preencher a posição
-            for (j = i; j < num_livros_adicionados - 1; j++) {
+            for (j = i; j < num_livros_adicionados - 1; j++) 
+            {
                 livros[j] = livros[j + 1];
             }
 
@@ -376,7 +388,8 @@ void exibirRelatorioLivrosMaisEmprestados() {
 }
 
 
-void main1(){
+void main1()
+{
                 printf("menu \"Exibir Relat�rios\":\n");
                 printf("1. Relat�rio de Livros Dispon�veis\n");
                 printf("2. Relat�rio de Livros Emprestados\n");
@@ -387,7 +400,8 @@ void main1(){
                 int subOpcao;
                 scanf("%d", &subOpcao);
 
-                switch (subOpcao) {
+                switch (subOpcao) 
+                {
                     case 1:
                         exibirRelatorioLivrosDisponiveis();
                         break;

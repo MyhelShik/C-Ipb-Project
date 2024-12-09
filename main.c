@@ -28,8 +28,14 @@ typedef struct
 
 
 #define max_livros 2
+<<<<<<< Updated upstream
 #define max_leitor 2
 #define max_emprestimo 50
+=======
+#define max_leitor 50
+#define max_emprestimo 50
+
+>>>>>>> Stashed changes
 
 
 

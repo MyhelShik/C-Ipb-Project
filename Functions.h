@@ -251,7 +251,8 @@ void ListarLivros()
     }    
 
 
-void PesquisarLivro() {
+void PesquisarLivro() 
+{
     if (num_livros_adicionados == 0) 
     {
         printf("Nenhum livro no sistema.\n");
@@ -282,7 +283,7 @@ void PesquisarLivro() {
     return;
     return GerirLivros();
 }
-// Função para remover um livro por ID
+
 void RemoverLivro() 
 {
     int id; int id_remover;

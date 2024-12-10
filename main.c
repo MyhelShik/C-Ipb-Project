@@ -208,6 +208,7 @@ void GerirLivros()
                 break;
             default:
                 printf("Opção inválida. Tente novamente...\n");
+                return GerirLivros();
         }
      while (opcao2 !=5);
      return menu_principal();
@@ -220,7 +221,7 @@ void AdicionarLivro()
 {
     livro *novolivro;  // Ponteiro para um livro
     static int contador_id = 0;  // Variável estática para manter o contador de IDs
-
+    int opcao;
     // bloco para adicionar múltiplos livros
     for (int i = 0; i < max_livros; i++) 
     {
@@ -269,16 +270,17 @@ void AdicionarLivro()
 
         if (continuar != 's' && continuar != 'S') 
         {
-            //break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
-            return GerirLivros();
-        }
-        else
-        {
-            return AdicionarLivro();
+            break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
+            
         }
         
     }
     printf("--------------------\n");
+    opcao=1;
+    if(opcao==1)
+    {
+        return GerirLivros();
+    }
     
 }
 void ListarLivros() 
@@ -299,24 +301,24 @@ void ListarLivros()
     if (num_livros_adicionados == 0) 
     {
         printf("Nenhum livro no sistema.\n");
-        return;
+        return GerirLivros();
     }
-    printf("Para sair escreva s");
-    } while (opcao == 's' && opcao =='S');
+    fflush(stdin);
+    printf("Para sair escreva (s/n)");
+    scanf("%c", &opcao);
+    break;
+    } while (opcao != 's' && opcao !='S');
     
-    
+    return GerirLivros();
     
     }    
 
 
 void PesquisarLivro() 
 {
-    if (num_livros_adicionados == 0) 
-    {
-        printf("Nenhum livro no sistema.\n");
-        return;
-    }
-
+    int opcao;
+    do{
+    getchar();
     char titulo_busca[100];
     printf("Digite o titulo do livro que deseja pesquisar: ");
     fgets(titulo_busca, sizeof(titulo_busca), stdin);
@@ -340,8 +342,18 @@ void PesquisarLivro()
     {
         printf("Nenhum livro encontrado com o título '%s'.\n", titulo_busca);
     }
-    return;
-    return GerirLivros();
+    fflush(stdin);
+    printf("Deseja procurar outro livro? (s/n) ");
+    scanf("%c", &opcao);
+    
+    }while(opcao == 'n' || opcao =='N');
+    printf("--------------------\n");
+
+     opcao=1;
+    if(opcao==1)
+    {
+        return GerirLivros();
+    }
 }
 // Função para remover um livro por ID
 void RemoverLivro() 

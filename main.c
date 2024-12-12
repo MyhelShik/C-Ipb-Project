@@ -6,7 +6,7 @@
 
 int main()
 {
-    GerirLivros();
+    menu_principal();
     // GerirLeitores();
     // exibirRelatorioLeitoresAtivos();
     return 0;

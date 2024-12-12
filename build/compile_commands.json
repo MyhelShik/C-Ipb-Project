@@ -1,8 +1,7 @@
 [
 {
-  "directory": "C:/Users/MyhelShik/Documents/GitHub/C-Ipb-Project/build",
-  "command": "C:\\TDM-GCC-64\\bin\\gcc.exe   -g -o CMakeFiles\\C-school-project.dir\\main.c.obj -c C:\\Users\\MyhelShik\\Documents\\GitHub\\C-Ipb-Project\\main.c",
-  "file": "C:/Users/MyhelShik/Documents/GitHub/C-Ipb-Project/main.c",
-  "output": "CMakeFiles/C-school-project.dir/main.c.obj"
+  "directory": "C:/Users/gafga/Documents/GitHub/literate-barnacle-/build",
+  "command": "C:\\OTHERS~1\\TDM\\bin\\gcc.exe   -g -o CMakeFiles\\C-school-project.dir\\main.c.obj -c C:\\Users\\gafga\\Documents\\GitHub\\literate-barnacle-\\main.c",
+  "file": "C:/Users/gafga/Documents/GitHub/literate-barnacle-/main.c"
 }
 ]

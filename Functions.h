@@ -5,6 +5,7 @@
 
 void GerirLeitores()
 {
+    int temp_leitor = 0; // to move to structure public VAR
     int opcao;
     int removeID = 0;
     do
@@ -13,35 +14,66 @@ void GerirLeitores()
         printf("1. Adicionar leitores\n"); 
         printf("2. Listar leitores\n"); 
         printf("3. Remover leitores\n");
-        printf("6. Sair\n"); 
+        printf("6. Sair ao menu principal\n"); 
         printf("Escolha uma opção: "); 
         scanf("%d", &opcao);
 
         switch(opcao)
         {
             case 1:
-            printf("Adicionar leitores:\n");
-            for (int i = 0; i < max_leitor; i++)
-            for (int i = 0; i < max_leitor; i++)
+            if(temp_leitor >= max_leitor)
             {
-                if (leitores[i] == NULL) 
-                    {
-                        leitores[i] = malloc(sizeof(leitor)); // Allocate memory
-                        if (!leitores[i]) 
-                        {
-                            printf("Erro ao alocar memória para leitores[%d]\n", i);
-                            exit(1);
-                        }
-                    }
-                
-                printf("Insira o nome do leitor %d:", i+1);
-                scanf(" %[^\n]", &leitores[i]->nome);
-                printf("Insira o numero do cartão de cidadão:");
-                scanf("%d", &leitores[i]->cc);
-
-                leitores[i]->id = i +1; // unique id assign
+                printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.",temp_leitor);
+                break;
             }
-            
+            else
+            {
+                printf("Adicionar leitores:\n");
+                for (int i = 0; i < max_leitor; i++)
+                {
+                    if (leitores[i] == NULL) 
+                        {
+                            leitores[i] = malloc(sizeof(leitor)); // Allocação da memória do apontador do leitor AKA. objeto -> leitor *leitores[max_leitor];
+                            if (!leitores[i]) 
+                            {
+                                printf("Erro ao alocar memória para leitores[%d]\n", i);
+                                exit(1);
+
+                            }
+                        }
+                    if(leitores[i] == NULL)
+                    else if(leitores[i]->nome[0] != '0')
+                    {
+                        printf("Skipped to the next slot.\n %d 1\n",leitores[i]->nome);
+                                // if check if the slot is occupied to jump to the next slot of the array and not rewrite the previous one
+                    }
+                    
+                    printf("Insira o nome do leitor %d:", i+1);
+                    scanf(" %[^\n]", &leitores[i]->nome);
+                    printf("Insira o numero do cartão de cidadão:");
+                    scanf("%d", &leitores[i]->cc);
+
+                    leitores[i]->id = i +1; // unique id assign
+                    temp_leitor++; // count of max leitor if statement check   
+                    
+                    char continuar;
+                    printf("Deseja adicionar outro leitor? (s/n): ");
+                    scanf(" %[^\n]", &continuar);
+                    
+                    if(temp_leitor >= max_leitor)
+                    {
+                        printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.",temp_leitor);
+                        break;
+                    }
+                    else
+                    {
+                        if (continuar != 's' || continuar != 'S') 
+                            continue;
+                        else if(continuar != 'n' || continuar != 'N')
+                            break;
+                    }
+                }
+            }
             break;
             
             case 2:
@@ -60,15 +92,15 @@ void GerirLeitores()
                 {
                     if (leitores[i]->id == removeID)
                     {
+                        printf("Leitor com id %d, nome %s e cc %d, foi removido com successo!",leitores[i]->id,leitores[i]->nome,leitores[i]->cc);
+
                         leitores[i]->id = 0;
                         strcpy(leitores[i]->nome, "");
                         leitores[i]->cc = 0;
+                        temp_leitor--;
                     }
-                    
                 }
                 break;
-            
-
             
             default:
                 printf("Opção inválida. Tente novamente...\n");

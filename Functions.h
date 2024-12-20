@@ -3,11 +3,13 @@
 #include <string.h>
 #include "Data.h"
 
+
 void GerirLeitores()
 {
     int temp_leitor = 0; // to move to structure public VAR
     int opcao;
     int removeID = 0;
+    char continuar;
     do
     {
         printf("\n Menu Leitores:\n"); 
@@ -42,9 +44,13 @@ void GerirLeitores()
                             }
                         }
                     if(leitores[i] == NULL)
-                    else if(leitores[i]->nome[0] != '0')
+                    {
+                        printf("shut the fuck up!");
+                    }
+                    else if(leitores[i]->nome != NULL)
                     {
                         printf("Skipped to the next slot.\n %d 1\n",leitores[i]->nome);
+                        
                                 // if check if the slot is occupied to jump to the next slot of the array and not rewrite the previous one
                     }
                     
@@ -56,7 +62,6 @@ void GerirLeitores()
                     leitores[i]->id = i +1; // unique id assign
                     temp_leitor++; // count of max leitor if statement check   
                     
-                    char continuar;
                     printf("Deseja adicionar outro leitor? (s/n): ");
                     scanf(" %[^\n]", &continuar);
                     

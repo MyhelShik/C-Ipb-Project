@@ -10,4 +10,5 @@ int main()
     // GerirLeitores();
     // exibirRelatorioLeitoresAtivos();
     return 0;
+    
 }

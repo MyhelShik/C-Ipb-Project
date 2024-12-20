@@ -15,6 +15,7 @@ typedef struct
     int id; 
     char nome[50]; 
     int cc;
+    
 }leitor;
 
 typedef struct 
@@ -27,7 +28,7 @@ typedef struct
 
 
 #define max_livros 1
-#define max_leitor 1
+#define max_leitor 3
 #define max_emprestimo 50
 
 

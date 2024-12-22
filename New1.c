@@ -25,17 +25,12 @@ int main()
     if(f == NULL)
         printf("erro na abertura do ficheiro.\n");
 
-    /*
-    while(fgets(str,sizeof(str),f)!=NULL)
-    {
-        printf("%s"str);
-    }
-    */
     else
     {
         for (int i = 0; i < 2; i++)
         {
             fprintf(f, "Nome: %s, Salario: %d\n",cls[i].nome,cls[i].salario);
+            
         }
         
         printf("Successo!\n");

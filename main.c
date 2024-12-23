@@ -33,6 +33,7 @@ int main()
     }
     
     fclose(f);
+    
 
     return 0;
     //while(fscanf(f,"%d,%[^\n]",&leitor[i]->id,&leitor.nome)!=EOF> || )

@@ -72,9 +72,9 @@ void GerirLeitores()
                     }
                     else
                     {
-                        if (continuar != 's' || continuar != 'S') 
+                        if (strcmp(continuar, "s") || strcmp(continuar, "S")) 
                             continue;
-                        else if(continuar != 'n' || continuar != 'N')
+                        else if(strcmp(continuar, "n") || strcmp(continuar, "N")) 
                             break;
                     }
                 }

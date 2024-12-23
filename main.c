@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h> 
 
 typedef struct
 {
@@ -358,7 +359,7 @@ void PesquisarLivro()
 // Função para remover um livro por ID
 void RemoverLivro() 
 {
-    int id; int id_remover;
+    int id_remover;
     int i, j;
     int encontrado = 0;
     printf("Digite o ID do livro que deseja remover: ");
@@ -366,10 +367,10 @@ void RemoverLivro()
     // Procura pelo livro com o ID fornecido
     for (i = 0; i < num_livros_adicionados; i++) 
         {
-            if (livros[i]->id == id) 
+            if (livros[i]->id == id_remover) 
             {
                 // Livro encontrado
-                printf("Livro encontrado: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
+                printf("Livro removido: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
 
             }
                 // Desloca os livros seguintes para preencher a posição
@@ -381,15 +382,13 @@ void RemoverLivro()
             // Decrementa o contador de livros
             num_livros_adicionados--;
 
-            printf("Livro com ID %d removido com sucesso!\n", id);
-            encontrado = 1;
-            break;
+            
         }
-        return;
+        return GerirLivros();
 
  if (!encontrado) 
     {
-        printf("Livro com ID %d não encontrado.\n", id);
+        printf("Livro com ID %d não encontrado.\n", &id_remover);
     }
 
     return GerirLivros();
@@ -416,6 +415,7 @@ void exibirRelatorioLeitoresAtivos()
 {
     printf("Relatório de Leitores Ativos:\n");
     for (int i = 0; i < max_leitor; i++) 
+
     {
         printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
         printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
@@ -465,10 +465,14 @@ void main1()
 
 }
 
-int main()
+int main(void)
 {
+    setlocale(LC_ALL, "Portuguese_portugal");
     menu_principal();
-    // GerirLeitores();
-    // exibirRelatorioLeitoresAtivos();
+    //GerirLeitores();
+    //exibirRelatorioLeitoresAtivos();
     return 0;
+    
+    
 }
+  

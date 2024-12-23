@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,7 +24,7 @@ int main()
         {
             if(leitores[i]->id != 0)
             {
-                fprintf(f, "%d, %s %d\n",leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                fprintf(f, "%d, %s, %d\n",leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
                 printf("%d, %s %d\nEscrito com sucesso!\n",leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
             }
 
@@ -34,7 +33,6 @@ int main()
     }
     
     fclose(f);
-    
 
     return 0;
     //while(fscanf(f,"%d,%[^\n]",&leitor[i]->id,&leitor.nome)!=EOF> || )

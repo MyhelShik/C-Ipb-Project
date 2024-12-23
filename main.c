@@ -469,8 +469,9 @@ int main(void)
 {
     setlocale(LC_ALL, "Portuguese_portugal");
     menu_principal();
-    //GerirLeitores();
-    //exibirRelatorioLeitoresAtivos();
+    // GerirLeitores();
+    // exibirRelatorioLeitoresAtivos();
+    
     return 0;
     
     

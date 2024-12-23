@@ -465,13 +465,11 @@ void main1()
 
 }
 
-int main(void)
+int main()
 {
     setlocale(LC_ALL, "Portuguese_portugal");
     menu_principal();
-    // GerirLeitores();
-    // exibirRelatorioLeitoresAtivos();
-    
+    //main1();
     return 0;
     
     

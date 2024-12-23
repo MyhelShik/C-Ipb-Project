@@ -1,47 +1,15 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Functions.h"
+#include "Data.h"
 
-
-int main()
-{
-<<<<<<< HEAD
-    int id;
-    char titulo[100], autor[100];
-    int ano;
-    int disponivel; //1 para disponivel e 0 se emprestado
-}livro;
-
-typedef struct 
-{ 
-    int id; 
-    char nome[50]; 
-    int cc;
-}leitor;
-
-typedef struct 
-{ 
-    int idLivro; 
-    int idLeitor; 
-    char dataEmprestimo[11]; 
-    char dataDevolucao[11]; 
-} emprestimo;
-
-#define max_livros 2
-#define max_leitor 2
-#define max_emprestimo 50
-
-
-
-leitor *leitores[max_leitor];
 
 void GerirLeitores()
 {
     int temp_leitor = 0; // to move to structure public VAR
     int opcao;
     int removeID = 0;
+    char continuar;
     do
     {
         printf("\n Menu Leitores:\n"); 
@@ -72,9 +40,20 @@ void GerirLeitores()
                             {
                                 printf("Erro ao alocar memória para leitores[%d]\n", i);
                                 exit(1);
+
                             }
                         }
-
+                    if(leitores[i] == NULL)
+                    {
+                        printf("shut the fuck up!");
+                    }
+                    else if(leitores[i]->nome != NULL)
+                    {
+                        printf("Skipped to the next slot.\n %d 1\n",leitores[i]->nome);
+                        
+                                // if check if the slot is occupied to jump to the next slot of the array and not rewrite the previous one
+                    }
+                    
                     printf("Insira o nome do leitor %d:", i+1);
                     scanf(" %[^\n]", &leitores[i]->nome);
                     printf("Insira o numero do cartão de cidadão:");
@@ -83,7 +62,6 @@ void GerirLeitores()
                     leitores[i]->id = i +1; // unique id assign
                     temp_leitor++; // count of max leitor if statement check   
                     
-                    char continuar;
                     printf("Deseja adicionar outro leitor? (s/n): ");
                     scanf(" %[^\n]", &continuar);
                     
@@ -94,9 +72,9 @@ void GerirLeitores()
                     }
                     else
                     {
-                        if (continuar != 's' || continuar != 'S') 
+                        if (strcmp(continuar, "s") || strcmp(continuar, "S")) 
                             continue;
-                        else if(continuar != 'n' || continuar != 'N')
+                        else if(strcmp(continuar, "n") || strcmp(continuar, "N")) 
                             break;
                     }
                 }
@@ -211,20 +189,17 @@ void GerirLivros()
                 break;
             default:
                 printf("Opção inválida. Tente novamente...\n");
-                return GerirLivros();
         }
      while (opcao2 !=5);
      return menu_principal();
 }
 
-livro *livros[max_livros];  // Array de ponteiros para armazenar os livros
-int num_livros_adicionados = 0;  // Contador de livros adicionados 
 
 void AdicionarLivro()
 {
     livro *novolivro;  // Ponteiro para um livro
     static int contador_id = 0;  // Variável estática para manter o contador de IDs
-    int opcao;
+
     // bloco para adicionar múltiplos livros
     for (int i = 0; i < max_livros; i++) 
     {
@@ -273,17 +248,16 @@ void AdicionarLivro()
 
         if (continuar != 's' && continuar != 'S') 
         {
-            break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
-            
+            //break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
+            return GerirLivros();
+        }
+        else
+        {
+            return AdicionarLivro();
         }
         
     }
     printf("--------------------\n");
-    opcao=1;
-    if(opcao==1)
-    {
-        return GerirLivros();
-    }
     
 }
 void ListarLivros() 
@@ -295,41 +269,40 @@ void ListarLivros()
     {
         for (int i = 0; i < num_livros_adicionados; i++) 
         {
-            printf("ID: %d\n", livros[i]->id);
-            printf("Titulo: %s\n", livros[i]->titulo);
-            printf("Autor: %s\n", livros[i]->autor);
-            printf("Ano: %d\n", livros[i]->ano);
-            printf("--------------------\n");
+        printf("ID: %d\n", livros[i]->id);
+        printf("Titulo: %s\n", livros[i]->titulo);
+        printf("Autor: %s\n", livros[i]->autor);
+        printf("Ano: %d\n", livros[i]->ano);
+        printf("--------------------\n");
         }
-    if (num_livros_adicionados == 0) 
-    {
-        printf("Nenhum livro no sistema.\n");
-        return GerirLivros();
-    }
-    fflush(stdin);
-    printf("Para sair escreva (s/n)");
-    scanf("%c", &opcao);
-    break;
-    } while (opcao != 's' && opcao !='S');
+        if (num_livros_adicionados == 0) 
+        {
+            printf("Nenhum livro no sistema.\n");
+            return;
+        }
+        printf("Para sair escreva s");
+    } while (opcao == 's' && opcao =='S');
     
-    return GerirLivros();
+    
     
     }    
 
 
 void PesquisarLivro() 
 {
-    int opcao;
-    do{
-    getchar();
+    if (num_livros_adicionados == 0) 
+    {
+        printf("Nenhum livro no sistema.\n");
+        return;
+    }
+
     char titulo_busca[100];
     printf("Digite o titulo do livro que deseja pesquisar: ");
     fgets(titulo_busca, sizeof(titulo_busca), stdin);
     titulo_busca[strcspn(titulo_busca, "\n")] = '\0';  // Remove o caractere de nova linha
 
     int encontrado = 0;
-    for (int i = 0; i < num_livros_adicionados; i++) 
-    {
+    for (int i = 0; i < num_livros_adicionados; i++) {
         if (strstr(livros[i]->titulo, titulo_busca) != NULL) 
         {  // Verifica se o título contém o texto de busca
             printf("Livro encontrado: ID: %d\n", livros[i]->id);
@@ -341,41 +314,30 @@ void PesquisarLivro()
         }
     }
 
-    if (!encontrado) 
-    {
+    if (!encontrado) {
         printf("Nenhum livro encontrado com o título '%s'.\n", titulo_busca);
     }
-    fflush(stdin);
-    printf("Deseja procurar outro livro? (s/n) ");
-    scanf("%c", &opcao);
-    
-    }while(opcao == 'n' || opcao =='N');
-    printf("--------------------\n");
-
-     opcao=1;
-    if(opcao==1)
-    {
-        return GerirLivros();
-    }
+    return;
+    return GerirLivros();
 }
-// Função para remover um livro por ID
+
 void RemoverLivro() 
 {
-    int id_remover;
+    int id; int id_remover;
     int i, j;
     int encontrado = 0;
     printf("Digite o ID do livro que deseja remover: ");
     scanf("%d", &id_remover);
     // Procura pelo livro com o ID fornecido
     for (i = 0; i < num_livros_adicionados; i++) 
+    {
+        if (livros[i]->id == id) 
         {
-            if (livros[i]->id == id_remover) 
-            {
-                // Livro encontrado
-                printf("Livro removido: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
+            // Livro encontrado
+            printf("Livro encontrado: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
 
-            }
-                // Desloca os livros seguintes para preencher a posição
+        }
+            // Desloca os livros seguintes para preencher a posição
             for (j = i; j < num_livros_adicionados - 1; j++) 
             {
                 livros[j] = livros[j + 1];
@@ -384,13 +346,15 @@ void RemoverLivro()
             // Decrementa o contador de livros
             num_livros_adicionados--;
 
-            
+            printf("Livro com ID %d removido com sucesso!\n", id);
+            encontrado = 1;
+            break;
         }
-        return GerirLivros();
+        return;
 
  if (!encontrado) 
     {
-        printf("Livro com ID %d não encontrado.\n", &id_remover);
+        printf("Livro com ID %d não encontrado.\n", id);
     }
 
     return GerirLivros();
@@ -410,14 +374,12 @@ void exibirRelatorioLivrosDisponiveis()
 void exibirRelatorioLivrosEmprestados() 
 {
     printf("Relat�rio de Livros Emprestados\n");
-    // C�digo para listar livros emprestados
 }
 
 void exibirRelatorioLeitoresAtivos() 
 {
     printf("Relatório de Leitores Ativos:\n");
     for (int i = 0; i < max_leitor; i++) 
-
     {
         printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
         printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
@@ -463,49 +425,4 @@ void main1()
                         printf("Op��o inv�lida! Tente novamente.\n");
                         break;
                 }
-               
-
-}
-
-int main()
-{
-    setlocale(LC_ALL, "Portuguese_portugal");
-    menu_principal();
-    //main1();
-=======
-    menu_principal();
-    // GerirLeitores();
-    // exibirRelatorioLeitoresAtivos();
-
-
-    FILE *f; 
-    f = fopen("..\\leitores.txt", "w");
-    leitor cls[5];
-
-    if(f == NULL)
-        printf("erro na abertura do ficheiro.\n");
-
-    else
-    {
-        for (int i = 0; i < max_leitor; i++)
-        {
-            if(leitores[i]->id != 0)
-            {
-                fprintf(f, "%d, %s %d\n",leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-                printf("%d, %s %d\nEscrito com sucesso!\n",leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-            }
-
-        }
-        printf("Sucesso!");
-    }
-    
-    fclose(f);
-    
-
->>>>>>> df9941346387e1abe93175e93008fa99663ab0a0
-    return 0;
-    //while(fscanf(f,"%d,%[^\n]",&leitor[i]->id,&leitor.nome)!=EOF> || )
-
-    //fprintf(f, "%d, %s\n",leitor[i]->id != NULL, leitor[i]->nome != "")
-
 }

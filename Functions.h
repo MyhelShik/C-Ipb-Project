@@ -3,6 +3,70 @@
 #include <string.h>
 #include "Data.h"
 
+void SnL() // save and list methods
+{
+    FILE *f1, *f2;
+    int choice = 0;
+    printf("Pretende salvar ou rever ultima sessao salvada?\n1 - salvar.\n2 - ver ultima sessao.\n");
+    scanf("%d", &choice);
+
+    switch (choice)
+    {
+    case 1:
+        f1 = fopen("..\\leitores.txt", "w");
+
+        if (f1 == NULL)
+            printf("erro na abertura do ficheiro.\n");
+        else
+        {
+            for (int i = 0; i < max_leitor; i++)
+            {
+                if (leitores[i]->id != 0)
+                {
+                    fprintf(f1, "%d, %s, %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                    printf("%d, %s %d\nEscrito com sucesso!\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }
+            }
+            printf("Sucesso!");
+        }
+        fclose(f1);
+    break;
+
+    case 2:
+        f2 = fopen("..\\leitores.txt", "r");
+
+        if (f2 != NULL)
+        {
+            for (int i = 0; i < max_leitor; i++)
+            {
+                leitores[i] = malloc(sizeof(leitor)); // Allocate memory for each leitor SLOT aka array[i]
+                if (leitores[i] == NULL)
+                {
+                    printf("Erro ao alocar memoria para leitores[%d]\n", i);
+                    exit(1);
+                }
+
+                if (fscanf(f2, "%d, %50[^,], %d\n", &leitores[i]->id, leitores[i]->nome, &leitores[i]->cc) == 3) // Read three vars from the .txt and check if it equals 3 || or to consider that it can be changed to gets method and used different approach where ther would be a check for the next line until encounters empty.
+                {
+                    printf("Leitor carregado: %d, %s, %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }
+                else
+                {
+                    printf("Erro ao ler dados do arquivo para leitores[%d]\n", i);
+                    free(leitores[i]); // Free memory if reading fails
+                    leitores[i] = NULL;
+                    break; // Stop if reading fails
+                }
+            }
+            fclose(f2);
+        }
+    break;
+
+    default:
+        printf("Tenta os numeros entre 1-2.\n");
+        break;
+    }
+}
 
 void GerirLeitores()
 {
@@ -16,7 +80,7 @@ void GerirLeitores()
         printf("1. Adicionar leitores\n"); 
         printf("2. Listar leitores\n"); 
         printf("3. Remover leitores\n");
-        printf("6. Sair ao menu principal\n"); 
+        printf("6. Voltar ao menu principal\n"); 
         printf("Escolha uma opção: "); 
         scanf("%d", &opcao);
 
@@ -68,8 +132,8 @@ void GerirLeitores()
                         }
                         else
                         {
-                            // If check if the slot is occupied to jump to the next slot of the array and not rewrite the previous one
-                            printf("Skipped to the next slot.\n");
+                            // Checks wheter the slot is occupied to jump to the next slot of the array and not rewrite the previous one
+                            printf("[%d]-> This slot is occupied. Skipped to available one.\n", leitores[i]->id);
                         }
                     }
                 }
@@ -79,7 +143,7 @@ void GerirLeitores()
                 printf("Listar leitores:\n");
                 for (int i = 0; i < max_leitor; i++)
                 {
-                    if (leitores[i] != NULL && leitores[i]->id != 0) // Check for initialized and valid readers
+                    if (leitores[i] != NULL && leitores[i]->id != 0) // Check for initialized and valid readers to list
                         printf("leitor: %d \n nome: %s - CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
                 }    
                 break;
@@ -89,13 +153,13 @@ void GerirLeitores()
                 scanf("%d", &removeID);
                 for (int i = 0; i < max_leitor; i++)
                 {
-                    if (leitores[i] != NULL && leitores[i]->id == removeID)
+                    if (leitores[i] != NULL && leitores[i]->id == removeID) // check if not NULL && check if id equals the removeID that the user selected
                     {
                         printf("Leitor com id %d, nome %s e cc %d, foi removido com sucesso!\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
 
-                        free(leitores[i]); // Free memory
-                        leitores[i] = NULL; // Mark slot as available
-                        temp_leitor--; // Decrement reader count
+                        free(leitores[i]); // Free memory of the exact slot that user selected
+                        leitores[i] = NULL; // Mark slot as available of the exact slot that user selected
+                        temp_leitor--; // Decrement reader count of the exact slot that user selected
                         break;
                     }
                 }
@@ -109,6 +173,7 @@ void GerirLeitores()
 }
 
 
+
 void menu_principal() 
 {
     int opcao;
@@ -120,7 +185,7 @@ void menu_principal()
         printf("3. Registar Emprestimo\n"); 
         printf("4. Registar Devolução\n"); 
         printf("5. Exibir Relatorios\n"); 
-        printf("6. Sair\n"); 
+        printf("6. Sair e salvar informacao\n"); 
         printf("Escolha uma opção: "); 
         scanf("%d", &opcao);
 
@@ -130,7 +195,6 @@ void menu_principal()
                 GerirLivros();
                 break;
             case 2:
-                //GerirLeitores();
                 GerirLeitores();
                 break;
             case 3:
@@ -280,7 +344,6 @@ void ListarLivros()
     
     
     }    
-
 
 void PesquisarLivro() 
 {

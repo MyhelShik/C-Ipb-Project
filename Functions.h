@@ -67,7 +67,6 @@ void SnL() // save and list methods
         break;
     }
 }
-
 void GerirLeitores()
 {
     int temp_leitor = 0; // to move to structure public VAR
@@ -171,10 +170,10 @@ void GerirLeitores()
         }
     } while (opcao != 6);
 }
-
-
+//menu principal
 
 void menu_principal() 
+
 {
     int opcao;
     do
@@ -438,41 +437,113 @@ void RemoverLivro()
 }
 }
 
-void exibirRelatorioLivrosDisponiveis() 
+
+// borrowing system
+void RegistarEmprestimo() 
 {
-    printf("Relat�rio de Livros Dispon�veis\n");
+    if (num_emprestimos >= MAX_EMPRESTIMOS) {
+        printf("Número máximo de empréstimos atingido.\n");
+        return;
+    }
+
+    int idLivro, idLeitor;
+    printf("Digite o ID do livro para emprestar: ");
+    scanf("%d", &idLivro);
+    printf("Digite o ID do leitor: ");
+    scanf("%d", &idLeitor);
+
+    // Verifica se o livro está disponível
+    livro *livroEmprestado = NULL;
     for (int i = 0; i < num_livros_adicionados; i++) 
     {
-        printf("%d Livro ID: %d\n",i, livros[i]->id);        
+        if (livros[i]->id == idLivro) {
+            livroEmprestado = livros[i];
+            break;
+        }
     }
- 
-}
 
-void exibirRelatorioLivrosEmprestados() 
-{
-    printf("Relat�rio de Livros Emprestados\n");
-}
+    if (!livroEmprestado) 
+    {
+        printf("Livro com ID %d não encontrado.\n", idLivro);
+        return;
+    }
 
-void exibirRelatorioLeitoresAtivos() 
-{
-    printf("Relatório de Leitores Ativos:\n");
+    if (livroEmprestado->disponivel == 0) 
+    {
+        printf("Livro com ID %d já está emprestado.\n", idLivro);
+        return;
+    }
+
+    // Verifica se o leitor existe
+    leitor *leitorEmprestimo = NULL;
     for (int i = 0; i < max_leitor; i++) 
     {
-        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-        
+        if (leitores[i] != NULL && leitores[i]->id == idLeitor) {
+            leitorEmprestimo = leitores[i];
+            break;
+        }
+    }
+
+    if (!leitorEmprestimo) {
+        printf("Leitor com ID %d não encontrado.\n", idLeitor);
+        return;
+    }
+
+    // Registra o empréstimo
+    emprestimos[num_emprestimos].idLivro = idLivro;
+    emprestimos[num_emprestimos].idLeitor = idLeitor;
+    printf("Digite a data de empréstimo (dd/mm/aaaa): ");
+    scanf("%s", emprestimos[num_emprestimos].dataEmprestimo);
+    strcpy(emprestimos[num_emprestimos].dataDevolucao, ""); // Devolução ainda não realizada
+
+    // Atualiza o status do livro
+    livroEmprestado->disponivel = 0;
+
+    printf("Empréstimo registrado com sucesso!\n");
+    num_emprestimos++;
+}
+
+// Return system 
+void RegistarDevolucao() 
+{
+    int idLivro;
+    printf("Digite o ID do livro para devolução: ");
+    scanf("%d", &idLivro);
+
+    // Encontra o empréstimo ativo para o livro
+    int encontrado = 0;
+    for (int i = 0; i < num_emprestimos; i++) 
+    {
+        if (emprestimos[i].idLivro == idLivro && strcmp(emprestimos[i].dataDevolucao, "") == 0) 
+        {
+            encontrado = 1;
+
+            // Registra a devolução
+            printf("Digite a data de devolução (dd/mm/aaaa): ");
+            scanf("%s", emprestimos[i].dataDevolucao);
+
+            // Atualiza o status do livro
+            for (int j = 0; j < num_livros_adicionados; j++) {
+                if (livros[j]->id == idLivro) {
+                    livros[j]->disponivel = 1;
+                    break;
+                }
+            }
+
+            printf("Devolução registrada com sucesso!\n");
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("Nenhum empréstimo ativo encontrado para o livro com ID %d.\n", idLivro);
     }
 }
 
 
-void exibirRelatorioLivrosMaisEmprestados() 
-{
-    printf("Relat�rio de Livros Mais Emprestados\n");
-    // C�digo para listar livros mais emprestados
-}
 
-
-void main1()
+// I think the next code is kinda useless, no offense
+/*
 {
                 printf("menu \"Exibir Relat�rios\":\n");
                 printf("1. Relat�rio de Livros Dispon�veis\n");
@@ -503,3 +574,4 @@ void main1()
                         break;
                 }
 }
+*/

@@ -31,6 +31,10 @@ typedef struct
 #define max_leitor 3
 #define max_emprestimo 50
 
+#define MAX_EMPRESTIMOS 50
+emprestimo emprestimos[MAX_EMPRESTIMOS]; // Array para armazenar empréstimos
+int num_emprestimos = 0;
+
 
 
 leitor *leitores[max_leitor];

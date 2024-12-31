@@ -278,31 +278,32 @@ void ListarLivros()
         if (num_livros_adicionados == 0) 
         {
             printf("Nenhum livro no sistema.\n");
-            return;
+            return GerirLivros();
         }
+        fflush(stdin);
         printf("Para sair escreva s");
+        scanf("%c", &opcao);
+         break;
     } while (opcao == 's' && opcao =='S');
     
     
-    
+     return GerirLivros();
     }    
 
 
 void PesquisarLivro() 
 {
-    if (num_livros_adicionados == 0) 
-    {
-        printf("Nenhum livro no sistema.\n");
-        return;
-    }
-
+    int opcao;
+    do{
+    getchar();
     char titulo_busca[100];
     printf("Digite o titulo do livro que deseja pesquisar: ");
     fgets(titulo_busca, sizeof(titulo_busca), stdin);
     titulo_busca[strcspn(titulo_busca, "\n")] = '\0';  // Remove o caractere de nova linha
 
     int encontrado = 0;
-    for (int i = 0; i < num_livros_adicionados; i++) {
+    for (int i = 0; i < num_livros_adicionados; i++) 
+    {
         if (strstr(livros[i]->titulo, titulo_busca) != NULL) 
         {  // Verifica se o título contém o texto de busca
             printf("Livro encontrado: ID: %d\n", livros[i]->id);
@@ -314,30 +315,39 @@ void PesquisarLivro()
         }
     }
 
-    if (!encontrado) {
+    if (!encontrado) 
+    {
         printf("Nenhum livro encontrado com o título '%s'.\n", titulo_busca);
     }
-    return;
-    return GerirLivros();
+    fflush(stdin);
+    printf("Deseja procurar outro livro? (s/n) ");
+    scanf("%c", &opcao);
+
+    }while(opcao == 'n' || opcao =='N');
+    printf("--------------------\n");
+return GerirLivros();
+     
+   
 }
 
 void RemoverLivro() 
 {
-    int id; int id_remover;
+    int id_remover;
     int i, j;
     int encontrado = 0;
+     
     printf("Digite o ID do livro que deseja remover: ");
     scanf("%d", &id_remover);
     // Procura pelo livro com o ID fornecido
     for (i = 0; i < num_livros_adicionados; i++) 
-    {
-        if (livros[i]->id == id) 
         {
-            // Livro encontrado
-            printf("Livro encontrado: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
+            if (livros[i]->id == id_remover) 
+            {
+                // Livro encontrado
+                printf("Livro removido: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
 
-        }
-            // Desloca os livros seguintes para preencher a posição
+            }
+                // Desloca os livros seguintes para preencher a posição
             for (j = i; j < num_livros_adicionados - 1; j++) 
             {
                 livros[j] = livros[j + 1];
@@ -346,20 +356,30 @@ void RemoverLivro()
             // Decrementa o contador de livros
             num_livros_adicionados--;
 
-            printf("Livro com ID %d removido com sucesso!\n", id);
-            encontrado = 1;
-            break;
+
+
+
         }
-        return;
+        return GerirLivros();
 
  if (!encontrado) 
     {
-        printf("Livro com ID %d não encontrado.\n", id);
+        printf("Livro com ID %d não encontrado.\n", &id_remover);
     }
 
     return GerirLivros();
-}
 
+{
+    printf("Relatório de Leitores Ativos:\n");
+    for (int i = 0; i < max_leitor; i++) 
+
+    {
+        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+
+    }
+}
+}
 
 void exibirRelatorioLivrosDisponiveis() 
 {

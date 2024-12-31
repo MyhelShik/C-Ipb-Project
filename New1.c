@@ -1,4 +1,4 @@
-#include <stdio.h>
+/* #include <stdio.h>
 
  
 typedef struct
@@ -37,4 +37,4 @@ int main()
     }
     
     fclose(f);
-}
+} */

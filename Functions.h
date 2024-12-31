@@ -3,117 +3,176 @@
 #include <string.h>
 #include "Data.h"
 
+void SnL() // save and list methods
+{
+    FILE *f1, *f2;
+    int choice = 0;
+    printf("Pretende salvar ou rever ultima sessao salvada?\n1 - salvar.\n2 - ver ultima sessao.\n");
+    scanf("%d", &choice);
+
+    switch (choice)
+    {
+    case 1:
+        f1 = fopen("..\\leitores.txt", "w");
+
+        if (f1 == NULL)
+            printf("erro na abertura do ficheiro.\n");
+        else
+        {
+            for (int i = 0; i < max_leitor; i++)
+            {
+                if (leitores[i]->id != 0)
+                {
+                    fprintf(f1, "%d, %s, %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                    printf("%d, %s %d\nEscrito com sucesso!\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }
+            }
+            printf("Sucesso!");
+        }
+        fclose(f1);
+    break;
+
+    case 2:
+        f2 = fopen("..\\leitores.txt", "r");
+
+        if (f2 != NULL)
+        {
+            for (int i = 0; i < max_leitor; i++)
+            {
+                leitores[i] = malloc(sizeof(leitor)); // Allocate memory for each leitor SLOT aka array[i]
+                if (leitores[i] == NULL)
+                {
+                    printf("Erro ao alocar memoria para leitores[%d]\n", i);
+                    exit(1);
+                }
+
+                if (fscanf(f2, "%d, %50[^,], %d\n", &leitores[i]->id, leitores[i]->nome, &leitores[i]->cc) == 3) // Read three vars from the .txt and check if it equals 3 || or to consider that it can be changed to gets method and used different approach where ther would be a check for the next line until encounters empty.
+                {
+                    printf("Leitor carregado: %d, %s, %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }
+                else
+                {
+                    printf("Erro ao ler dados do arquivo para leitores[%d]\n", i);
+                    free(leitores[i]); // Free memory if reading fails
+                    leitores[i] = NULL;
+                    break; // Stop if reading fails
+                }
+            }
+            fclose(f2);
+        }
+    break;
+
+    default:
+        printf("Tenta os numeros entre 1-2.\n");
+        break;
+    }
+}
 
 void GerirLeitores()
 {
     int temp_leitor = 0; // to move to structure public VAR
     int opcao;
     int removeID = 0;
-    char continuar;
+    char continuar[50];
     do
     {
         printf("\n Menu Leitores:\n"); 
         printf("1. Adicionar leitores\n"); 
         printf("2. Listar leitores\n"); 
         printf("3. Remover leitores\n");
-        printf("6. Sair ao menu principal\n"); 
+        printf("6. Voltar ao menu principal\n"); 
         printf("Escolha uma opção: "); 
         scanf("%d", &opcao);
 
         switch(opcao)
         {
-            case 1:
-            if(temp_leitor >= max_leitor)
-            {
-                printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.",temp_leitor);
-                break;
-            }
-            else
-            {
-                printf("Adicionar leitores:\n");
-                for (int i = 0; i < max_leitor; i++)
+            case 1: // Add readers
+                if(temp_leitor >= max_leitor)
                 {
-                    if (leitores[i] == NULL) 
+                    printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.\n", temp_leitor);
+                    break;
+                }
+                else
+                {
+                    printf("Adicionar leitores:\n");
+                    for (int i = 0; i < max_leitor; i++)
+                    {
+                        if (leitores[i] == NULL) 
                         {
                             leitores[i] = malloc(sizeof(leitor)); // Allocação da memória do apontador do leitor AKA. objeto -> leitor *leitores[max_leitor];
                             if (!leitores[i]) 
                             {
                                 printf("Erro ao alocar memória para leitores[%d]\n", i);
                                 exit(1);
+                            }
 
+                            printf("Insira o nome do leitor %d:", i + 1);
+                            scanf(" %[^\n]", leitores[i]->nome);
+                            printf("Insira o numero do cartão de cidadão:");
+                            scanf("%d", &leitores[i]->cc);
+
+                            leitores[i]->id = i + 1; // unique id assign
+                            temp_leitor++; // count of max leitor if statement check   
+                            
+                            printf("Deseja adicionar outro leitor? (s/n): ");
+                            scanf(" %[^\n]", continuar);
+                            
+                            if (temp_leitor >= max_leitor)
+                            {
+                                printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.\n", temp_leitor);
+                                break;
+                            }
+                            else
+                            {
+                                if (continuar[0] == 's' || continuar[0] == 'S') 
+                                    continue;
+                                else if (continuar[0] == 'n' || continuar[0] == 'N')
+                                    break;
                             }
                         }
-                    if(leitores[i] == NULL)
-                    {
-                        printf("shut the fuck up!");
-                    }
-                    else if(leitores[i]->nome != NULL)
-                    {
-                        printf("Skipped to the next slot.\n %d 1\n",leitores[i]->nome);
-                        
-                                // if check if the slot is occupied to jump to the next slot of the array and not rewrite the previous one
-                    }
-                    
-                    printf("Insira o nome do leitor %d:", i+1);
-                    scanf(" %[^\n]", &leitores[i]->nome);
-                    printf("Insira o numero do cartão de cidadão:");
-                    scanf("%d", &leitores[i]->cc);
-
-                    leitores[i]->id = i +1; // unique id assign
-                    temp_leitor++; // count of max leitor if statement check   
-                    
-                    printf("Deseja adicionar outro leitor? (s/n): ");
-                    scanf(" %[^\n]", &continuar);
-                    
-                    if(temp_leitor >= max_leitor)
-                    {
-                        printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.",temp_leitor);
-                        break;
-                    }
-                    else
-                    {
-                        if (strcmp(continuar, "s") || strcmp(continuar, "S")) 
-                            continue;
-                        else if(strcmp(continuar, "n") || strcmp(continuar, "N")) 
-                            break;
-                    }
-                }
-            }
-            break;
-            
-            case 2:
-            printf("Listar leitores:\n");
-            for (int i = 0; i < max_leitor; i++)
-            {
-                if(leitores[i]->id != 0)
-                    printf("leitor: %d \n nome:%s - CC:%d\n",i+1,leitores[i]->nome,leitores[i]->cc);
-            }    
-            break;
-
-            case 3:
-                printf("Remover leitores:\n");
-                scanf("%d",&removeID);
-                for (int i = 0; i < max_leitor; i++)
-                {
-                    if (leitores[i]->id == removeID)
-                    {
-                        printf("Leitor com id %d, nome %s e cc %d, foi removido com successo!",leitores[i]->id,leitores[i]->nome,leitores[i]->cc);
-
-                        leitores[i]->id = 0;
-                        strcpy(leitores[i]->nome, "");
-                        leitores[i]->cc = 0;
-                        temp_leitor--;
+                        else
+                        {
+                            // Checks wheter the slot is occupied to jump to the next slot of the array and not rewrite the previous one
+                            printf("[%d]-> This slot is occupied. Skipped to available one.\n", leitores[i]->id);
+                        }
                     }
                 }
                 break;
-            
+
+            case 2: // List readers
+                printf("Listar leitores:\n");
+                for (int i = 0; i < max_leitor; i++)
+                {
+                    if (leitores[i] != NULL && leitores[i]->id != 0) // Check for initialized and valid readers to list
+                        printf("leitor: %d \n nome: %s - CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }    
+                break;
+
+            case 3: // Remove readers
+                printf("Remover leitores:\n");
+                scanf("%d", &removeID);
+                for (int i = 0; i < max_leitor; i++)
+                {
+                    if (leitores[i] != NULL && leitores[i]->id == removeID) // check if not NULL && check if id equals the removeID that the user selected
+                    {
+                        printf("Leitor com id %d, nome %s e cc %d, foi removido com sucesso!\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+
+                        free(leitores[i]); // Free memory of the exact slot that user selected
+                        leitores[i] = NULL; // Mark slot as available of the exact slot that user selected
+                        temp_leitor--; // Decrement reader count of the exact slot that user selected
+                        break;
+                    }
+                }
+                break;
+
             default:
                 printf("Opção inválida. Tente novamente...\n");
                 break;
         }
-    } while (opcao !=6);
-    
+    } while (opcao != 6);
 }
+
+
 
 void menu_principal() 
 {
@@ -126,7 +185,7 @@ void menu_principal()
         printf("3. Registar Emprestimo\n"); 
         printf("4. Registar Devolução\n"); 
         printf("5. Exibir Relatorios\n"); 
-        printf("6. Sair\n"); 
+        printf("6. Sair e salvar informacao\n"); 
         printf("Escolha uma opção: "); 
         scanf("%d", &opcao);
 
@@ -136,7 +195,6 @@ void menu_principal()
                 GerirLivros();
                 break;
             case 2:
-                //GerirLeitores();
                 GerirLeitores();
                 break;
             case 3:
@@ -289,7 +347,6 @@ void ListarLivros()
     
      return GerirLivros();
     }    
-
 
 void PesquisarLivro() 
 {

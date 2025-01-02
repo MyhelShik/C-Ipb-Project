@@ -3,6 +3,70 @@
 #include <string.h>
 #include "Data.h"
 
+void SnL() // save and list methods
+{
+    FILE *f1, *f2;
+    int choice = 0;
+    printf("Pretende salvar ou rever ultima sessao salvada?\n1 - salvar.\n2 - ver ultima sessao.\n");
+    scanf("%d", &choice);
+
+    switch (choice)
+    {
+    case 1:
+        f1 = fopen("..\\leitores.txt", "w");
+
+        if (f1 == NULL)
+            printf("erro na abertura do ficheiro.\n");
+        else
+        {
+            for (int i = 0; i < max_leitor; i++)
+            {
+                if (leitores[i]->id != 0)
+                {
+                    fprintf(f1, "%d, %s, %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                    printf("%d, %s %d\nEscrito com sucesso!\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }
+            }
+            printf("Sucesso!");
+        }
+        fclose(f1);
+    break;
+
+    case 2:
+        f2 = fopen("..\\leitores.txt", "r");
+
+        if (f2 != NULL)
+        {
+            for (int i = 0; i < max_leitor; i++)
+            {
+                leitores[i] = malloc(sizeof(leitor)); // Allocate memory for each leitor SLOT aka array[i]
+                if (leitores[i] == NULL)
+                {
+                    printf("Erro ao alocar memoria para leitores[%d]\n", i);
+                    exit(1);
+                }
+
+                if (fscanf(f2, "%d, %50[^,], %d\n", &leitores[i]->id, leitores[i]->nome, &leitores[i]->cc) == 3) // Read three vars from the .txt and check if it equals 3 || or to consider that it can be changed to gets method and used different approach where ther would be a check for the next line until encounters empty.
+                {
+                    printf("Leitor carregado: %d, %s, %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
+                }
+                else
+                {
+                    printf("Erro ao ler dados do arquivo para leitores[%d]\n", i);
+                    free(leitores[i]); // Free memory if reading fails
+                    leitores[i] = NULL;
+                    break; // Stop if reading fails
+                }
+            }
+            fclose(f2);
+        }
+    break;
+
+    default:
+        printf("Tenta os numeros entre 1-2.\n");
+        break;
+    }
+}
 void GerirLeitores()
 {
     int temp_leitor = 0; // to move to structure public VAR
@@ -31,7 +95,7 @@ void GerirLeitores()
                
     
     // Abrir o ficheiro leitores.txt para leitura e encontrar o maior ID registrado
-    ficheiro = fopen("..\\output\\leitores.txt", "r");
+    ficheiro = fopen("leitores.txt", "r");
     if (ficheiro != NULL) {
         int maior_id = 0;
         int id;
@@ -87,7 +151,7 @@ void GerirLeitores()
         leitores[num_leitores_adicionados++] = novo_leitor;
         
         // Grava o livro no ficheiro leitores.txt
-        ficheiro = fopen("..\\output\\leitores.txt", "a");
+        ficheiro = fopen("leitores.txt", "a");
         if (ficheiro != NULL) {
             fprintf(ficheiro, "leitor: ID %d - Nome: %s, Cartao de cidadao: %d\n", novo_leitor->id, novo_leitor->nome,novo_leitor->cc);  // Apenas o ID e informações
             fclose(ficheiro);
@@ -106,7 +170,7 @@ void GerirLeitores()
 
 
             case 2: // List readers
-                ficheiro = fopen("..\\output\\leitores.txt", "r");
+                ficheiro = fopen("leitores.txt", "r");
                 if (ficheiro == NULL) {
                     printf("Erro ao abrir o arquivo leitores.txt.\n");
                     return;
@@ -130,7 +194,7 @@ void GerirLeitores()
     scanf("%d", &id_remover);
 
     // Abrir o arquivo original para leitura
-    ficheiro = fopen("..\\output\\leitores.txt", "r");
+    ficheiro = fopen("leitores.txt", "r");
     if (ficheiro == NULL) 
     {
         printf("Erro ao abrir o arquivo leitores.txt.\n");
@@ -195,10 +259,10 @@ void GerirLeitores()
     }
 
     // Apagar o arquivo original
-    remove("..\\output\\leitores.txt");
+    remove("leitores.txt");
 
     // Renomear o arquivo temporário para o nome original
-    if (rename("leitores_temp.txt", "..\\output\\leitores.txt") != 0) 
+    if (rename("leitores_temp.txt", "leitores.txt") != 0) 
     {
         printf("Erro ao atualizar o arquivo de leitores.\n");
         return GerirLeitores();  // Retorna ao menu
@@ -299,7 +363,7 @@ void AdicionarLivro() {
     FILE *ficheiro;
     
     // Abrir o ficheiro livros.txt para leitura e encontrar o maior ID registrado
-    ficheiro = fopen("..\\output\\livros.txt", "r");
+    ficheiro = fopen("livros.txt", "r");
     if (ficheiro != NULL) {
         int maior_id = 0;
         int id;
@@ -357,7 +421,7 @@ void AdicionarLivro() {
         livros[num_livros_adicionados++] = novolivro;
         
         // Grava o livro no ficheiro livros.txt
-        ficheiro = fopen("..\\output\\livros.txt", "a");
+        ficheiro = fopen("livros.txt", "a");
         if (ficheiro != NULL) {
             fprintf(ficheiro, "Livro: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", novolivro->id, novolivro->titulo, novolivro->autor, novolivro->ano);  // Apenas o ID e informações
             fclose(ficheiro);
@@ -377,7 +441,7 @@ void AdicionarLivro() {
 
 void ListarLivros() 
 {
-    FILE *ficheiro = fopen("..\\output\\livros.txt", "r");  // Abre o arquivo para leitura
+    FILE *ficheiro = fopen("livros.txt", "r");  // Abre o arquivo para leitura
     if (ficheiro == NULL) {
         printf("Erro ao abrir o arquivo livros.txt.\n");
         return GerirLivros();  // Retorna ao menu de gerenciamento
@@ -417,7 +481,7 @@ void PesquisarLivro()
         fgets(titulo_busca, sizeof(titulo_busca), stdin);
         titulo_busca[strcspn(titulo_busca, "\n")] = '\0';  // Remove o caractere de nova linha
 
-        FILE *ficheiro = fopen("..\\output\\livros.txt", "r");  // Abre o arquivo para leitura
+        FILE *ficheiro = fopen("livros.txt", "r");  // Abre o arquivo para leitura
         if (ficheiro == NULL) {
             printf("Erro ao abrir o arquivo livros.txt.\n");
             return GerirLivros();  // Retorna ao menu de gerenciamento
@@ -462,7 +526,7 @@ void RemoverLivro()
     scanf("%d", &id_remover);
 
     // Abrir o arquivo original para leitura
-    ficheiro = fopen("..\\output\\livros.txt", "r");
+    ficheiro = fopen("livros.txt", "r");
     if (ficheiro == NULL) 
     {
         printf("Erro ao abrir o arquivo livros.txt.\n");
@@ -524,10 +588,10 @@ void RemoverLivro()
     }
 
     // Apagar o arquivo original
-    remove("..\\output\\livros.txt");
+    remove("livros.txt");
 
     // Renomear o arquivo temporário para o nome original
-    if (rename("livros_temp.txt", "..\\output\\livros.txt") != 0) 
+    if (rename("livros_temp.txt", "livros.txt") != 0) 
     {
         printf("Erro ao atualizar o arquivo de livros.\n");
         return;  // Retorna ou chama GerirLivros()
@@ -589,24 +653,22 @@ void RegistarEmprestimo() {
     // Registra o empréstimo
     emprestimos[num_emprestimos].idLivro = idLivro;
     emprestimos[num_emprestimos].idLeitor = idLeitor;
-
     printf("Digite a data de empréstimo (dd/mm/aaaa): ");
-    scanf("%10s", emprestimos[num_emprestimos].dataEmprestimo);  // Limit input size to avoid buffer overflow
-
-    strcpy(emprestimos[num_emprestimos].dataDevolucao, "");  // Devolução ainda não realizada
+    scanf("%s", emprestimos[num_emprestimos].dataEmprestimo);
+    strcpy(emprestimos[num_emprestimos].dataDevolucao, ""); // Devolução ainda não realizada
 
     // Atualiza o status do livro
     livroEmprestado->disponivel = 0;
 
     // Escreve o empréstimo no arquivo emprestimos.txt
-    FILE *ficheiroEmprestimos = fopen("..\\output\\emprestimos.txt", "a");  // Abre o arquivo em modo de anexação
+    FILE *ficheiroEmprestimos = fopen("emprestimos.txt", "a");  // Abre o arquivo em modo de anexação
     if (ficheiroEmprestimos == NULL) {
         printf("Erro ao abrir o arquivo de empréstimos.\n");
         return;
     }
 
     // Escreve os dados do empréstimo no arquivo
-    fprintf(ficheiroEmprestimos, "Empréstimo: Livro ID %d, Leitor ID %d, Data Empréstimo: %s, Data Devolução: %s\n",
+    fprintf(ficheiroEmprestimos, "Empréstimo: Livro ID %d, Leitor ID %d, Data Empréstimo: %s\n",
             emprestimos[num_emprestimos].idLivro,
             emprestimos[num_emprestimos].idLeitor,
             emprestimos[num_emprestimos].dataEmprestimo,
@@ -618,7 +680,6 @@ void RegistarEmprestimo() {
     num_emprestimos++;
 }
 
-
 // Função para registrar a devolução de um livro
 void RegistarDevolucao() {
     int idLivro, idLeitor;
@@ -628,14 +689,14 @@ void RegistarDevolucao() {
     scanf("%d", &idLeitor);
 
     // Abrir o arquivo de empréstimos para leitura
-    FILE *ficheiroEmprestimos = fopen("..\\output\\emprestimos.txt", "r");
+    FILE *ficheiroEmprestimos = fopen("emprestimos.txt", "r");
     if (ficheiroEmprestimos == NULL) {
         printf("Erro ao abrir o arquivo de empréstimos.\n");
         return;
     }
 
     // Criar um arquivo temporário para armazenar os empréstimos que não são devolvidos
-    FILE *ficheiroTemp = fopen("emprestimos_temp.txt", "w");  
+    FILE *ficheiroTemp = fopen("emprestimos_temp.txt", "w");
     if (ficheiroTemp == NULL) {
         printf("Erro ao criar o arquivo temporário.\n");
         fclose(ficheiroEmprestimos);
@@ -677,19 +738,54 @@ void RegistarDevolucao() {
     fclose(ficheiroTemp);
 
     // Se o empréstimo não for encontrado
-    if (!encontrado) 
-    {
+    if (!encontrado) {
         printf("Empréstimo com ID Livro %d e ID Leitor %d não encontrado.\n", idLivro, idLeitor);
         remove("emprestimos_temp.txt");  // Apaga o arquivo temporário em caso de erro
         return;
     }
 
     // Apagar o arquivo original de empréstimos
-    remove("..\\output\\emprestimos.txt");
+    remove("emprestimos.txt");
 
     // Renomear o arquivo temporário para o nome original
-    if (rename("emprestimos_temp.txt", "..\\output\\emprestimos.txt") != 0) {
+    if (rename("emprestimos_temp.txt", "emprestimos.txt") != 0) {
         printf("Erro ao atualizar o arquivo de empréstimos.\n");
         return;
     }
 }
+
+
+
+// I think the next code is kinda useless, no offense
+/*
+{
+                printf("menu \"Exibir Relat�rios\":\n");
+                printf("1. Relat�rio de Livros Dispon�veis\n");
+                printf("2. Relat�rio de Livros Emprestados\n");
+                printf("3. Relat�rio de Leitores Ativos\n");
+                printf("4. Voltar ao Menu Principal\n");
+                printf("Escolha uma op��o: ");
+                
+                int subOpcao;
+                scanf("%d", &subOpcao);
+
+                switch (subOpcao) 
+                {
+                    case 1:
+                        exibirRelatorioLivrosDisponiveis();
+                        break;
+                    case 2:
+                        exibirRelatorioLivrosEmprestados();
+                        break;
+                    case 3:
+                        exibirRelatorioLeitoresAtivos();
+                        break;
+                    case 4:
+                        printf("Voltando ao Menu Principal\n");
+                        break;
+                    default:
+                        printf("Op��o inv�lida! Tente novamente.\n");
+                        break;
+                }
+}
+*/

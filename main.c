@@ -7,6 +7,7 @@
 int main()
 {
     menu_principal();
+    SnL();
     
     return 0;
     

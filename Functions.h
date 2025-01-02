@@ -104,9 +104,10 @@ void GerirLeitores()
         // Lê cada linha do ficheiro para encontrar o maior ID
         while (fgets(linha, sizeof(linha), ficheiro)) {
             // Extrai o ID da linha
-            if (sscanf(linha, "Livro: ID %d", &id) == 1) {  // Ajustado para corresponder ao formato correto da linha
+            if (sscanf(linha, "leitor: ID %d", &id) == 1) {  // Ajustado para corresponder ao formato correto da linha
                 if (id > maior_id) {
                     maior_id = id;
+                    printf("%d", &maior_id);
                 }
             }
         }
@@ -667,7 +668,7 @@ void RegistarEmprestimo() {
     }
 
     // Escreve os dados do empréstimo no arquivo
-    fprintf(ficheiroEmprestimos, "Empréstimo: Livro ID %d, Leitor ID %d, Data Empréstimo: %s, Data Devolução: %s\n",
+    fprintf(ficheiroEmprestimos, "Empréstimo: Livro ID %d, Leitor ID %d, Data Empréstimo: %s\n",
             emprestimos[num_emprestimos].idLivro,
             emprestimos[num_emprestimos].idLeitor,
             emprestimos[num_emprestimos].dataEmprestimo,
@@ -681,35 +682,75 @@ void RegistarEmprestimo() {
 
 // Função para registrar a devolução de um livro
 void RegistarDevolucao() {
-    int idLivro;
-    printf("Digite o ID do livro para devolução: ");
+    int idLivro, idLeitor;
+    printf("Digite o ID do livro que está sendo devolvido: ");
     scanf("%d", &idLivro);
+    printf("Digite o ID do leitor que está devolvendo o livro: ");
+    scanf("%d", &idLeitor);
 
-    // Encontra o empréstimo ativo para o livro
+    // Abrir o arquivo de empréstimos para leitura
+    FILE *ficheiroEmprestimos = fopen("emprestimos.txt", "r");
+    if (ficheiroEmprestimos == NULL) {
+        printf("Erro ao abrir o arquivo de empréstimos.\n");
+        return;
+    }
+
+    // Criar um arquivo temporário para armazenar os empréstimos que não são devolvidos
+    FILE *ficheiroTemp = fopen("emprestimos_temp.txt", "w");
+    if (ficheiroTemp == NULL) {
+        printf("Erro ao criar o arquivo temporário.\n");
+        fclose(ficheiroEmprestimos);
+        return;
+    }
+
+    char linha[256];  // Buffer para ler as linhas do arquivo
     int encontrado = 0;
-    for (int i = 0; i < num_emprestimos; i++) {
-        if (emprestimos[i].idLivro == idLivro && strcmp(emprestimos[i].dataDevolucao, "") == 0) {
-            encontrado = 1;
+    while (fgets(linha, sizeof(linha), ficheiroEmprestimos)) {
+        int livroId, leitorId;
 
-            // Registra a devolução
-            printf("Digite a data de devolução (dd/mm/aaaa): ");
-            scanf("%s", emprestimos[i].dataDevolucao);
+        // Ler apenas os IDs do livro e do leitor
+        int n = sscanf(linha, "Empréstimo: Livro ID %d, Leitor ID %d", &livroId, &leitorId);
 
-            // Atualiza o status do livro
-            for (int j = 0; j < num_livros_adicionados; j++) {
-                if (livros[j]->id == idLivro) {
-                    livros[j]->disponivel = 1;
-                    break;
-                }
+        // Verifica se a leitura foi bem-sucedida
+        if (n == 2) {
+            // Se a linha corresponde ao livro e leitor, fazer a devolução
+            if (livroId == idLivro && leitorId == idLeitor) {
+                printf("Digite a data de devolução (dd/mm/aaaa): ");
+                char dataDevolucao[11];
+                scanf("%s", dataDevolucao);
+                // Atualiza a data de devolução no arquivo temporário
+                fprintf(ficheiroTemp, "Empréstimo: Livro ID %d, Leitor ID %d, Data Devolução: %s\n",
+                        livroId, leitorId, dataDevolucao);
+                printf("Devolução registrada com sucesso!\n");
+                encontrado = 1;
+            } else {
+                // Caso contrário, copie a linha original para o arquivo temporário
+                fprintf(ficheiroTemp, "%s", linha);
             }
-
-            printf("Devolução registrada com sucesso!\n");
-            break;
+        } else {
+            // Caso o formato não tenha sido lido corretamente, copie a linha sem alteração
+            fprintf(ficheiroTemp, "%s", linha);
         }
     }
 
+    // Fechar ambos os arquivos
+    fclose(ficheiroEmprestimos);
+    fclose(ficheiroTemp);
+
+    // Se o empréstimo não for encontrado
     if (!encontrado) {
-        printf("Nenhum empréstimo ativo encontrado para o livro com ID %d.\n", idLivro);
+        printf("Empréstimo com ID Livro %d e ID Leitor %d não encontrado.\n", idLivro, idLeitor);
+        remove("emprestimos_temp.txt");  // Apaga o arquivo temporário em caso de erro
+        return;
+    }
+
+    // Apagar o arquivo original de empréstimos
+    remove("emprestimos.txt");
+
+    // Renomear o arquivo temporário para o nome original
+    if (rename("emprestimos_temp.txt", "emprestimos.txt") != 0) {
+        printf("Erro ao atualizar o arquivo de empréstimos.\n");
+        return;
     }
 }
 

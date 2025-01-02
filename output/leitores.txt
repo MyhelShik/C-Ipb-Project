@@ -1,5 +1,4 @@
-leitor: ID 1 - Nome: asdasd, Cartao de cidadao: 22222
-leitor: ID 1 - Nome: asdasd, Cartao de cidadao: 2222
 leitor: ID 1 - Nome: asdas, Cartao de cidadao: 2222
-leitor: ID 2 - Nome: asdasd, Cartao de cidadao: 22222
-leitor: ID 1 - Nome: asdsad, Cartao de cidadao: 222
+leitor: ID 2 - Nome: dasda, Cartao de cidadao: 2223
+leitor: ID 3 - Nome: adsad, Cartao de cidadao: 2222
+leitor: ID 4 - Nome: asdas, Cartao de cidadao: 222

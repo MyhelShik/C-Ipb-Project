@@ -659,6 +659,22 @@ void RegistarEmprestimo() {
     // Atualiza o status do livro
     livroEmprestado->disponivel = 0;
 
+    // Escreve o empréstimo no arquivo emprestimos.txt
+    FILE *ficheiroEmprestimos = fopen("emprestimos.txt", "a");  // Abre o arquivo em modo de anexação
+    if (ficheiroEmprestimos == NULL) {
+        printf("Erro ao abrir o arquivo de empréstimos.\n");
+        return;
+    }
+
+    // Escreve os dados do empréstimo no arquivo
+    fprintf(ficheiroEmprestimos, "Empréstimo: Livro ID %d, Leitor ID %d, Data Empréstimo: %s, Data Devolução: %s\n",
+            emprestimos[num_emprestimos].idLivro,
+            emprestimos[num_emprestimos].idLeitor,
+            emprestimos[num_emprestimos].dataEmprestimo,
+            emprestimos[num_emprestimos].dataDevolucao);
+
+    fclose(ficheiroEmprestimos);  // Fecha o arquivo
+
     printf("Empréstimo registrado com sucesso!\n");
     num_emprestimos++;
 }

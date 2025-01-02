@@ -73,6 +73,12 @@ void GerirLeitores()
     int opcao;
     int removeID = 0;
     char continuar[50];
+    FILE *ficheiro;
+    leitor *novo_leitor;// Ponteiro para um leitor
+    static int contador_id = 0; // Variável estática para manter o contador de IDs
+    int id_remover;
+    int encontrado = 0;
+    FILE *ficheiro_temp;
     do
     {
         printf("\n Menu Leitores:\n"); 
@@ -86,88 +92,186 @@ void GerirLeitores()
         switch(opcao)
         {
             case 1: // Add readers
-                if(temp_leitor >= max_leitor)
-                {
-                    printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.\n", temp_leitor);
-                    break;
+               
+    
+    // Abrir o ficheiro leitores.txt para leitura e encontrar o maior ID registrado
+    ficheiro = fopen("leitores.txt", "r");
+    if (ficheiro != NULL) {
+        int maior_id = 0;
+        int id;
+        char linha[256];
+        
+        // Lê cada linha do ficheiro para encontrar o maior ID
+        while (fgets(linha, sizeof(linha), ficheiro)) {
+            // Extrai o ID da linha
+            if (sscanf(linha, "Livro: ID %d", &id) == 1) {  // Ajustado para corresponder ao formato correto da linha
+                if (id > maior_id) {
+                    maior_id = id;
                 }
-                else
-                {
-                    printf("Adicionar leitores:\n");
-                    for (int i = 0; i < max_leitor; i++)
-                    {
-                        if (leitores[i] == NULL) 
-                        {
-                            leitores[i] = malloc(sizeof(leitor)); // Allocação da memória do apontador do leitor AKA. objeto -> leitor *leitores[max_leitor];
-                            if (!leitores[i]) 
-                            {
-                                printf("Erro ao alocar memória para leitores[%d]\n", i);
-                                exit(1);
-                            }
+            }
+        }
+        fclose(ficheiro);  // Fecha o ficheiro após ler
+        contador_id = maior_id;  // Inicializa o contador_id com o maior ID encontrado
+    }
 
-                            printf("Insira o nome do leitor %d:", i + 1);
-                            scanf(" %[^\n]", leitores[i]->nome);
-                            printf("Insira o numero do cartão de cidadão:");
-                            scanf("%d", &leitores[i]->cc);
+    // Agora, o contador_id está correto. Vamos adicionar um novo leitor
+    printf("Adicionando leitor... O próximo ID será %d\n", contador_id + 1);
 
-                            leitores[i]->id = i + 1; // unique id assign
-                            temp_leitor++; // count of max leitor if statement check   
-                            
-                            printf("Deseja adicionar outro leitor? (s/n): ");
-                            scanf(" %[^\n]", continuar);
-                            
-                            if (temp_leitor >= max_leitor)
-                            {
-                                printf("Fora do numero leitores accessiveis,(%d > valor maximo de leitores) tenta noutra vez ou remove leitores para adiccionar.\n", temp_leitor);
-                                break;
-                            }
-                            else
-                            {
-                                if (continuar[0] == 's' || continuar[0] == 'S') 
-                                    continue;
-                                else if (continuar[0] == 'n' || continuar[0] == 'N')
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            // Checks wheter the slot is occupied to jump to the next slot of the array and not rewrite the previous one
-                            printf("[%d]-> This slot is occupied. Skipped to available one.\n", leitores[i]->id);
-                        }
-                    }
-                }
-                break;
+    // Bloco para adicionar múltiplos leitor
+    char continuar;
+    do {
+        printf("A adicionar leitor %d de %d\n", num_leitores_adicionados + 1, max_leitor);
+
+        novo_leitor = (leitor*)malloc(sizeof(leitor));  // Aloca memória para um leitor
+        if (novo_leitor == NULL) {
+            printf("Falha na alocação de memória\n");
+            return;
+        }
+
+        novo_leitor->id = ++contador_id;  // Aumenta o ID para o próximo leitor
+        fflush(stdin);
+        // Leitura do título com fgets
+        printf("Nome do Leitor: \n");
+        fgets(novo_leitor->nome, sizeof(novo_leitor->nome), stdin);
+        novo_leitor->nome[strcspn(novo_leitor->nome, "\n")] = '\0';  // Remove o caractere de nova linha
+
+        
+
+        // Leitura do ano com fgets e conversão para inteiro
+        printf("Numero de cc: \n");
+        char ano_input[10];
+        fgets(ano_input, sizeof(ano_input), stdin);
+        sscanf(ano_input, "%d", &novo_leitor->cc);  // Converte a string para um inteiro
+
+        // Exibe os dados do leitor adicionado
+        printf("leitor adicionado: ID %d - Nome: %s, Cartao de cidadao: %d\n", novo_leitor->id, novo_leitor->nome,novo_leitor->cc);
+
+        // Armazena o leitor no array
+        leitores[num_leitores_adicionados++] = novo_leitor;
+        
+        // Grava o livro no ficheiro leitores.txt
+        ficheiro = fopen("leitores.txt", "a");
+        if (ficheiro != NULL) {
+            fprintf(ficheiro, "leitor: ID %d - Nome: %s, Cartao de cidadao: %d\n", novo_leitor->id, novo_leitor->nome,novo_leitor->cc);  // Apenas o ID e informações
+            fclose(ficheiro);
+        } else {
+            printf("Falha ao abrir o ficheiro para gravar\n");
+        }
+
+        // Pergunta ao utilizador se deseja adicionar mais leitores
+        printf("Deseja adicionar outro leitor? (s/n): ");
+        scanf(" %c", &continuar);  // Lê a resposta
+        getchar();  // Limpa o buffer de entrada
+
+    } while (continuar == 's' || continuar == 'S');  // Continuar enquanto a resposta for 's' ou 'S'
+
+    return GerirLeitores();
+
 
             case 2: // List readers
-                printf("Listar leitores:\n");
-                for (int i = 0; i < max_leitor; i++)
-                {
-                    if (leitores[i] != NULL && leitores[i]->id != 0) // Check for initialized and valid readers to list
-                        printf("leitor: %d \n nome: %s - CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-                }    
-                break;
-
-            case 3: // Remove readers
-                printf("Remover leitores:\n");
-                scanf("%d", &removeID);
-                for (int i = 0; i < max_leitor; i++)
-                {
-                    if (leitores[i] != NULL && leitores[i]->id == removeID) // check if not NULL && check if id equals the removeID that the user selected
-                    {
-                        printf("Leitor com id %d, nome %s e cc %d, foi removido com sucesso!\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-
-                        free(leitores[i]); // Free memory of the exact slot that user selected
-                        leitores[i] = NULL; // Mark slot as available of the exact slot that user selected
-                        temp_leitor--; // Decrement reader count of the exact slot that user selected
-                        break;
-                    }
+                ficheiro = fopen("leitores.txt", "r");
+                if (ficheiro == NULL) {
+                    printf("Erro ao abrir o arquivo leitores.txt.\n");
+                    return;
                 }
-                break;
 
-            default:
-                printf("Opção inválida. Tente novamente...\n");
-                break;
+                char linha[256];
+                while (fgets(linha, sizeof(linha), ficheiro)) {
+                    printf("%s", linha);
+                }
+                fclose(ficheiro);     
+             break;
+            
+            
+    
+        
+    
+
+    case 3: // Remover leitores
+    printf("Digite o ID do leitor que deseja remover: ");
+    int id_remover;
+    scanf("%d", &id_remover);
+
+    // Abrir o arquivo original para leitura
+    ficheiro = fopen("leitores.txt", "r");
+    if (ficheiro == NULL) 
+    {
+        printf("Erro ao abrir o arquivo leitores.txt.\n");
+        return GerirLeitores();  // Retorna ao menu
+    }
+
+    // Criar um arquivo temporário para armazenar os leitores que não serão removidos
+    ficheiro_temp = fopen("leitores_temp.txt", "w");
+    if (ficheiro_temp == NULL) 
+    {
+        printf("Erro ao criar o arquivo temporário.\n");
+        fclose(ficheiro);
+        return GerirLeitores();  // Retorna ao menu
+    }
+
+    // Ler o arquivo original linha por linha
+    
+    int encontrado = 0;
+
+    while (fgets(linha, sizeof(linha), ficheiro)) 
+    {
+        int leitor_id;
+        char nome[100];
+        int cc;
+
+        // Tentativa de ler os dados do leitor na linha
+        // Formato esperado: "leitor: ID X - Nome: Y, Cartao de cidadao: Z"
+        int n = sscanf(linha, "leitor: ID %d - Nome: %99[^,], Cartao de cidadao: %d", &leitor_id, nome, &cc);
+
+        // Verificar se a leitura foi bem-sucedida
+        if (n == 3)  // O formato correto é ID, Nome, Cartão de Cidadão
+        {
+            printf("Lido ID: %d, Nome: %s, Cartão de Cidadão: %d\n", leitor_id, nome, cc);
+
+            // Se o ID não corresponder ao ID a ser removido, escreva no arquivo temporário
+            if (leitor_id != id_remover) 
+            {
+                fprintf(ficheiro_temp, "leitor: ID %d - Nome: %s, Cartao de cidadao: %d\n", leitor_id, nome, cc);
+            } 
+            else 
+            {
+                encontrado = 1;  // Leitor encontrado e removido
+            }
         }
+        else
+        {
+            // Caso o sscanf não consiga ler corretamente
+            printf("Erro ao ler linha: %s", linha);
+        }
+    }
+
+    // Fechar ambos os arquivos
+    fclose(ficheiro);
+    fclose(ficheiro_temp);
+
+    // Se não encontrar o leitor para remover
+    if (!encontrado) 
+    {
+        printf("Leitor com ID %d não encontrado.\n", id_remover);
+        remove("leitores_temp.txt");  // Apaga o arquivo temporário em caso de erro
+        return GerirLeitores();  // Retorna ao menu
+    }
+
+    // Apagar o arquivo original
+    remove("leitores.txt");
+
+    // Renomear o arquivo temporário para o nome original
+    if (rename("leitores_temp.txt", "leitores.txt") != 0) 
+    {
+        printf("Erro ao atualizar o arquivo de leitores.\n");
+        return GerirLeitores();  // Retorna ao menu
+    }
+
+    printf("Leitor removido com sucesso do arquivo.\n");
+    return GerirLeitores();
+
+        }
+
     } while (opcao != 6);
 }
 //menu principal
@@ -197,10 +301,10 @@ void menu_principal()
                 GerirLeitores();
                 break;
             case 3:
-                //RegistarEmprestimo();
+                RegistarEmprestimo();
                 break;
             case 4:
-                //RegistarDevolucao();
+                RegistarDevolucao();
                 break;
             case 5:
                 //ExibirRelatorio();
@@ -252,195 +356,255 @@ void GerirLivros()
 }
 
 
-void AdicionarLivro()
-{
+void AdicionarLivro() {
     livro *novolivro;  // Ponteiro para um livro
     static int contador_id = 0;  // Variável estática para manter o contador de IDs
+    FILE *ficheiro;
+    
+    // Abrir o ficheiro livros.txt para leitura e encontrar o maior ID registrado
+    ficheiro = fopen("livros.txt", "r");
+    if (ficheiro != NULL) {
+        int maior_id = 0;
+        int id;
+        char linha[256];
+        
+        // Lê cada linha do ficheiro para encontrar o maior ID
+        while (fgets(linha, sizeof(linha), ficheiro)) {
+            // Extrai o ID da linha
+            if (sscanf(linha, "Livro: ID %d", &id) == 1) {  // Ajustado para corresponder ao formato correto da linha
+                if (id > maior_id) {
+                    maior_id = id;
+                }
+            }
+        }
+        fclose(ficheiro);  // Fecha o ficheiro após ler
+        contador_id = maior_id;  // Inicializa o contador_id com o maior ID encontrado
+    }
 
-    // bloco para adicionar múltiplos livros
-    for (int i = 0; i < max_livros; i++) 
-    {
-        printf("A adicionar livro %d de %d\n", i + 1, max_livros);
+    // Agora, o contador_id está correto. Vamos adicionar um novo livro.
+    printf("Adicionando livro... O próximo ID será %d\n", contador_id + 1);
+
+    // Bloco para adicionar múltiplos livros
+    char continuar;
+    do {
+        printf("A adicionar livro %d de %d\n", num_livros_adicionados + 1, max_livros);
 
         novolivro = (livro *)malloc(sizeof(livro));  // Aloca memória para um livro
-        if (novolivro == NULL) 
-        {
+        if (novolivro == NULL) {
             printf("Falha na alocação de memória\n");
             return;
         }
 
         novolivro->id = ++contador_id;  // Aumenta o ID para o próximo livro
-
         fflush(stdin);
         // Leitura do título com fgets
         printf("Titulo do livro: \n");
         fgets(novolivro->titulo, sizeof(novolivro->titulo), stdin);
         novolivro->titulo[strcspn(novolivro->titulo, "\n")] = '\0';  // Remove o caractere de nova linha
 
-        
         // Leitura do autor com fgets
         printf("Autor do livro: \n");
         fgets(novolivro->autor, sizeof(novolivro->autor), stdin);
         novolivro->autor[strcspn(novolivro->autor, "\n")] = '\0';  // Remove o caractere de nova linha
 
-        fflush(stdin);
         // Leitura do ano com fgets e conversão para inteiro
         printf("Ano do livro: \n");
         char ano_input[10];
         fgets(ano_input, sizeof(ano_input), stdin);
         sscanf(ano_input, "%d", &novolivro->ano);  // Converte a string para um inteiro
 
-        fflush(stdin);    
         // Exibe os dados do livro adicionado
         printf("Livro adicionado: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", novolivro->id, novolivro->titulo, novolivro->autor, novolivro->ano);
 
         // Armazena o livro no array
         livros[num_livros_adicionados++] = novolivro;
+        
+        // Grava o livro no ficheiro livros.txt
+        ficheiro = fopen("livros.txt", "a");
+        if (ficheiro != NULL) {
+            fprintf(ficheiro, "Livro: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", novolivro->id, novolivro->titulo, novolivro->autor, novolivro->ano);  // Apenas o ID e informações
+            fclose(ficheiro);
+        } else {
+            printf("Falha ao abrir o ficheiro para gravar\n");
+        }
 
         // Pergunta ao utilizador se deseja adicionar mais livros
-        char continuar;
         printf("Deseja adicionar outro livro? (s/n): ");
         scanf(" %c", &continuar);  // Lê a resposta
         getchar();  // Limpa o buffer de entrada
 
-        if (continuar != 's' && continuar != 'S') 
-        {
-            //break;  // Sai do bloco caso o utilizador não quiser adicionar mais livros
-            return GerirLivros();
-        }
-        else
-        {
-            return AdicionarLivro();
-        }
-        
-    }
-    printf("--------------------\n");
-    
+    } while (continuar == 's' || continuar == 'S');  // Continuar enquanto a resposta for 's' ou 'S'
+
+    return GerirLivros();
 }
+
 void ListarLivros() 
 {
-    
-    char opcao[40];
-    // Exibe os livros cadastrados
-    do
-    {
-        for (int i = 0; i < num_livros_adicionados; i++) 
-        {
-        printf("ID: %d\n", livros[i]->id);
-        printf("Titulo: %s\n", livros[i]->titulo);
-        printf("Autor: %s\n", livros[i]->autor);
-        printf("Ano: %d\n", livros[i]->ano);
-        printf("--------------------\n");
-        }
-        if (num_livros_adicionados == 0) 
-        {
-            printf("Nenhum livro no sistema.\n");
-            return GerirLivros();
-        }
-        fflush(stdin);
-        printf("Para sair escreva s");
-        scanf("%c", &opcao);
-         break;
-    } while (opcao == 's' && opcao =='S');
-    
-    
-     return GerirLivros();
-    }    
+    FILE *ficheiro = fopen("livros.txt", "r");  // Abre o arquivo para leitura
+    if (ficheiro == NULL) {
+        printf("Erro ao abrir o arquivo livros.txt.\n");
+        return GerirLivros();  // Retorna ao menu de gerenciamento
+    }
+
+    char linha[256];
+    int livroEncontrado = 0;  // Flag para verificar se há livros
+
+    // Lê cada linha do arquivo e exibe os dados dos livros
+    while (fgets(linha, sizeof(linha), ficheiro)) {
+        printf("%s", linha);  // Exibe a linha do livro
+        livroEncontrado = 1;
+    }
+
+    if (!livroEncontrado) {
+        printf("Nenhum livro encontrado no sistema.\n");
+    }
+
+    fclose(ficheiro);  // Fecha o arquivo após leitura
+
+    // Espera o usuário digitar 's' para sair
+    char opcao;
+    printf("Para sair, digite 's': ");
+    scanf(" %c", &opcao);  // Lê a opção do usuário, com espaço para limpar o buffer
+    if (opcao == 's' || opcao == 'S') {
+        return GerirLivros();  // Retorna ao menu de gerenciamento
+    }
+}
 
 void PesquisarLivro() 
 {
-    int opcao;
-    do{
-    getchar();
-    char titulo_busca[100];
-    printf("Digite o titulo do livro que deseja pesquisar: ");
-    fgets(titulo_busca, sizeof(titulo_busca), stdin);
-    titulo_busca[strcspn(titulo_busca, "\n")] = '\0';  // Remove o caractere de nova linha
+    char opcao;
+    do {
+        getchar();  // Limpa o buffer de entrada
+        char titulo_busca[100];
+        printf("Digite o título do livro que deseja pesquisar: ");
+        fgets(titulo_busca, sizeof(titulo_busca), stdin);
+        titulo_busca[strcspn(titulo_busca, "\n")] = '\0';  // Remove o caractere de nova linha
 
-    int encontrado = 0;
-    for (int i = 0; i < num_livros_adicionados; i++) 
-    {
-        if (strstr(livros[i]->titulo, titulo_busca) != NULL) 
-        {  // Verifica se o título contém o texto de busca
-            printf("Livro encontrado: ID: %d\n", livros[i]->id);
-            printf("Titulo: %s\n", livros[i]->titulo);
-            printf("Autor: %s\n", livros[i]->autor);
-            printf("Ano: %d\n", livros[i]->ano);
-            printf("--------------------\n");
-            encontrado = 1;
+        FILE *ficheiro = fopen("livros.txt", "r");  // Abre o arquivo para leitura
+        if (ficheiro == NULL) {
+            printf("Erro ao abrir o arquivo livros.txt.\n");
+            return GerirLivros();  // Retorna ao menu de gerenciamento
         }
-    }
 
-    if (!encontrado) 
-    {
-        printf("Nenhum livro encontrado com o título '%s'.\n", titulo_busca);
-    }
-    fflush(stdin);
-    printf("Deseja procurar outro livro? (s/n) ");
-    scanf("%c", &opcao);
+        char linha[256];
+        int encontrado = 0;
 
-    }while(opcao == 'n' || opcao =='N');
+        // Lê cada linha do arquivo e verifica se o título do livro contém a busca
+        while (fgets(linha, sizeof(linha), ficheiro)) {
+            if (strstr(linha, titulo_busca) != NULL) {  // Verifica se o título contém o texto buscado
+                printf("%s", linha);  // Exibe a linha do livro encontrado
+                encontrado = 1;
+            }
+        }
+
+        if (!encontrado) {
+            printf("Nenhum livro encontrado com o título '%s'.\n", titulo_busca);
+        }
+
+        fclose(ficheiro);  // Fecha o arquivo após leitura
+
+        // Pergunta ao usuário se deseja procurar outro livro
+        printf("Deseja procurar outro livro? (s/n): ");
+        scanf(" %c", &opcao);  // Lê a opção do usuário, com espaço para limpar o buffer
+
+    } while (opcao == 's' || opcao == 'S');  // Continua enquanto a resposta for 's' ou 'S'
+
     printf("--------------------\n");
-return GerirLivros();
-     
-   
+    return GerirLivros();  // Retorna ao menu de gerenciamento
 }
 
 void RemoverLivro() 
 {
     int id_remover;
-    int i, j;
     int encontrado = 0;
-     
+    FILE *ficheiro, *ficheiro_temp;
+    char linha[256];
+
+    // Solicitar o ID do livro que o usuário deseja remover
     printf("Digite o ID do livro que deseja remover: ");
     scanf("%d", &id_remover);
-    // Procura pelo livro com o ID fornecido
-    for (i = 0; i < num_livros_adicionados; i++) 
+
+    // Abrir o arquivo original para leitura
+    ficheiro = fopen("livros.txt", "r");
+    if (ficheiro == NULL) 
+    {
+        printf("Erro ao abrir o arquivo livros.txt.\n");
+        return GerirLivros();  // Retorna ao menu
+    }
+
+    // Criar um arquivo temporário para armazenar os livros que não serão removidos
+    ficheiro_temp = fopen("livros_temp.txt", "w");
+    if (ficheiro_temp == NULL) 
+    {
+        printf("Erro ao criar o arquivo temporário.\n");
+        fclose(ficheiro);
+        return GerirLivros();  // Retorna ao menu
+    }
+
+    // Ler o arquivo original linha por linha
+    while (fgets(linha, sizeof(linha), ficheiro)) 
+    {
+        int livro_id;
+        char titulo[100], autor[100];
+        int ano;
+
+        // Tentativa de ler os dados do livro na linha
+        // Formato esperado: "Livro: ID X - Titulo: Y, Autor: Z, Ano: W"
+        int n = sscanf(linha, "Livro: ID %d - Titulo: %99[^,], Autor: %99[^,], Ano: %d", &livro_id, titulo, autor, &ano);
+        
+        // Depuração: Verificar se a leitura foi bem-sucedida
+        if (n == 4) 
         {
-            if (livros[i]->id == id_remover) 
+            printf("Lido ID: %d, Titulo: %s, Autor: %s, Ano: %d\n", livro_id, titulo, autor, ano); // Verifique o que está sendo lido
+            
+            // Se o ID não corresponder ao ID a ser removido, escreva no arquivo temporário
+            if (livro_id != id_remover) 
             {
-                // Livro encontrado
-                printf("Livro removido: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livros[i]->id, livros[i]->titulo, livros[i]->autor, livros[i]->ano);
-
-            }
-                // Desloca os livros seguintes para preencher a posição
-            for (j = i; j < num_livros_adicionados - 1; j++) 
+                fprintf(ficheiro_temp, "Livro: ID %d - Titulo: %s, Autor: %s, Ano: %d\n", livro_id, titulo, autor, ano);
+            } 
+            else 
             {
-                livros[j] = livros[j + 1];
+                encontrado = 1;  // Livro encontrado e removido
             }
-
-            // Decrementa o contador de livros
-            num_livros_adicionados--;
-
-
-
-
         }
-        return GerirLivros();
-
- if (!encontrado) 
-    {
-        printf("Livro com ID %d não encontrado.\n", &id_remover);
+        else
+        {
+            // Caso o sscanf não consiga ler corretamente
+            printf("Erro ao ler linha: %s", linha);
+        }
     }
 
+    // Fechar ambos os arquivos
+    fclose(ficheiro);
+    fclose(ficheiro_temp);
+
+    // Se não encontrar o livro para remover
+    if (!encontrado) 
+    {
+        printf("Livro com ID %d não encontrado.\n", id_remover);
+        remove("livros_temp.txt");  // Apaga o arquivo temporário em caso de erro
+        return GerirLivros();  // Retorna ou chama GerirLivros()
+    }
+
+    // Apagar o arquivo original
+    remove("livros.txt");
+
+    // Renomear o arquivo temporário para o nome original
+    if (rename("livros_temp.txt", "livros.txt") != 0) 
+    {
+        printf("Erro ao atualizar o arquivo de livros.\n");
+        return;  // Retorna ou chama GerirLivros()
+    }
+
+    printf("Livro removido com sucesso do arquivo.\n");
     return GerirLivros();
-
-{
-    printf("Relatório de Leitores Ativos:\n");
-    for (int i = 0; i < max_leitor; i++) 
-
-    {
-        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-        printf("Leitor Ativo: ID: %d, Nome: %s, CC: %d\n", leitores[i]->id, leitores[i]->nome, leitores[i]->cc);
-
-    }
-}
 }
 
 
-// borrowing system
-void RegistarEmprestimo() 
-{
+
+
+// Função para registrar um empréstimo
+void RegistarEmprestimo() {
     if (num_emprestimos >= MAX_EMPRESTIMOS) {
         printf("Número máximo de empréstimos atingido.\n");
         return;
@@ -454,30 +618,26 @@ void RegistarEmprestimo()
 
     // Verifica se o livro está disponível
     livro *livroEmprestado = NULL;
-    for (int i = 0; i < num_livros_adicionados; i++) 
-    {
+    for (int i = 0; i < num_livros_adicionados; i++) {
         if (livros[i]->id == idLivro) {
             livroEmprestado = livros[i];
             break;
         }
     }
 
-    if (!livroEmprestado) 
-    {
+    if (!livroEmprestado) {
         printf("Livro com ID %d não encontrado.\n", idLivro);
         return;
     }
 
-    if (livroEmprestado->disponivel == 0) 
-    {
+    if (livroEmprestado->disponivel == 0) {
         printf("Livro com ID %d já está emprestado.\n", idLivro);
         return;
     }
 
     // Verifica se o leitor existe
     leitor *leitorEmprestimo = NULL;
-    for (int i = 0; i < max_leitor; i++) 
-    {
+    for (int i = 0; i < max_leitor; i++) {
         if (leitores[i] != NULL && leitores[i]->id == idLeitor) {
             leitorEmprestimo = leitores[i];
             break;
@@ -503,19 +663,16 @@ void RegistarEmprestimo()
     num_emprestimos++;
 }
 
-// Return system 
-void RegistarDevolucao() 
-{
+// Função para registrar a devolução de um livro
+void RegistarDevolucao() {
     int idLivro;
     printf("Digite o ID do livro para devolução: ");
     scanf("%d", &idLivro);
 
     // Encontra o empréstimo ativo para o livro
     int encontrado = 0;
-    for (int i = 0; i < num_emprestimos; i++) 
-    {
-        if (emprestimos[i].idLivro == idLivro && strcmp(emprestimos[i].dataDevolucao, "") == 0) 
-        {
+    for (int i = 0; i < num_emprestimos; i++) {
+        if (emprestimos[i].idLivro == idLivro && strcmp(emprestimos[i].dataDevolucao, "") == 0) {
             encontrado = 1;
 
             // Registra a devolução

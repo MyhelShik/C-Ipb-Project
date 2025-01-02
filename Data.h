@@ -37,7 +37,8 @@ int num_emprestimos = 0;
 
 
 
-leitor *leitores[max_leitor];
+leitor *leitores[max_leitor];// Array de ponteiros para armazenar os livros
 
 livro *livros[max_livros];  // Array de ponteiros para armazenar os livros
 int num_livros_adicionados = 0;  // Contador de livros adicionados 
+int num_leitores_adicionados = 0; //Contador de leitores adicionados
